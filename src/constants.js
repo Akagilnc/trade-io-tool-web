@@ -1,0 +1,1 @@
+export const domain="http://52.83.152.70:8000/";

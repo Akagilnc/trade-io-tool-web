@@ -1,13 +1,14 @@
-#root{
+/*#root{
     width:100vw;
     height: 100vh;
     display:flex;
     justify-content: center;
     align-items: center;
     border:2px solid red;
-}
+}*/
 #login {
-    width:30em;
+    max-width:30em;
+    margin: auto;
     //max-width:40em;
     //height:20em;
     border: 2px solid black;
