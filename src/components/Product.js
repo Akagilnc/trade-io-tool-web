@@ -3,44 +3,6 @@ import { domain } from "../constants";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { Redirect } from 'react-router-dom';
 
-/*let userGroup;
-let isLogin;
-function auth() {
-  let key = localStorage.getItem('tradeToolToken');
-  fetch(`${domain}io_tool/get-current-user`, {
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `token ${key}`
-    },
-    method: 'GET',
-    //body: JSON.stringify(obj)
-  }).then(
-    //(response) => {
-    //console.log(response);
-    //response.json();
-    //}
-    (response) => response.json()
-  ).then(
-    (data) => {
-      console.log('inside data');
-      console.log(data);
-      userGroup = data.groups[0];
-      isLogin = true;
-      //this.setState({ userGroup: data.groups[0] });
-      //this.setState({
-      ]]isLogin: true,
-        //token: key
-      ]]});
-    }
-  ).catch(
-    (errors) => {
-      console.log("inside error");
-      isLogin = false;
-    }
-  )
-}
-auth();
-console.log('isLogin ' + isLogin);*/
 class Product extends React.Component {
   constructor(props) {
     super(props);
@@ -67,7 +29,6 @@ class Product extends React.Component {
         "Authorization": `token ${key}`
       },
       method: 'GET',
-      //body: JSON.stringify(obj)
     }).then(
       (response) => response.json()
     ).then(
@@ -139,11 +100,8 @@ class Product extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    //console.log(event.target);
     let key = localStorage.getItem('tradeToolToken');
-    //console.log('input '+this.textInput.current.value);
     this.state.productData['title_en'] = 'change title';
-    //console.log(this.state.productData);
     fetch(`${domain}io_tool/products/`, {
       headers: {
         "Authorization": `token ${key}`
@@ -156,9 +114,6 @@ class Product extends React.Component {
       (data) => {
         console.log('inside data');
         console.log(data);
-        /*this.setState({
-          productData: data
-        });*/
       }
     ).catch(
       (errors) => {
@@ -167,18 +122,6 @@ class Product extends React.Component {
     )
   }
   render() {
-    /*console.log("inside render");
-    console.log(this.state.isLogin);
-    //if (this.state.isLogin == false) { return <Redirect to='/' />; }
-    let content = (this.state.isLogin)?
-      <h1>{this.props.match.params.product}</h1>:
-      <Redirect to='/' />;*/
-    /*const options = this.state.cata.map((e,i)=>{
-      return (
-          <option>{e['name']}</option>
-      );
-    });
-    <Form.Control type="text" readOnly={true} defaultValue={this.state.cata.results[0]['name']} />*/
     return (
       <div>
         <Form id="productsForm" onSubmit={this.handleSubmit} >
@@ -283,55 +226,55 @@ class Product extends React.Component {
           <Form.Group as={Row} controlId="formPlaintextTitle">
             <Form.Label column sm="3">主图</Form.Label>
             <Col sm="9">
-              {this.state.userGroup == 'ui' ? <Form.Control name="pic_main" type="file" /> : <img src={this.state.productData['pic_main']} />}
+              {this.state.userGroup == 'ui' ? <Form.Control name="pic_main" type="file" /> : <img className="image" src={this.state.productData['pic_main']} />}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="formPlaintextTitle">
             <Form.Label column sm="3">图片1</Form.Label>
             <Col sm="9">
-              {this.state.userGroup == 'ui' ? <Form.Control name="pic_1st" type="file" /> : <Form.Control type='text' readOnly defaultValue={this.state.productData['pic_1st']} />}
+              {this.state.userGroup == 'ui' ? <Form.Control name="pic_1st" type="file" /> : <img className="image" src={this.state.productData['pic_1st']} />}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="formPlaintextTitle">
             <Form.Label column sm="3">图片2</Form.Label>
             <Col sm="9">
-              {this.state.userGroup == 'ui' ? <Form.Control name="pic_2nd" type="file" /> : <Form.Control type='text' readOnly defaultValue={this.state.productData['pic_2nd']} />}
+              {this.state.userGroup == 'ui' ? <Form.Control name="pic_2nd" type="file" /> : <img className="image" src={this.state.productData['pic_2nd']}/>}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="formPlaintextTitle">
             <Form.Label column sm="3">图片3</Form.Label>
             <Col sm="9">
-              {this.state.userGroup == 'ui' ? <Form.Control name="pic_3rd" type="file" /> : <Form.Control type='text' readOnly defaultValue={this.state.productData['pic_3rd']} />}
+              {this.state.userGroup == 'ui' ? <Form.Control name="pic_3rd" type="file" /> : <img className="image" src={this.state.productData['pic_3rd']}/>}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="formPlaintextTitle">
             <Form.Label column sm="3">图片4</Form.Label>
             <Col sm="9">
-              {this.state.userGroup == 'ui' ? <Form.Control name="pic_4th" type="file" /> : <Form.Control type='text' readOnly defaultValue={this.state.productData['pic_4th']} />}
+              {this.state.userGroup == 'ui' ? <Form.Control name="pic_4th" type="file" /> : <img className="image" src={this.state.productData['pic_4th']}/>}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="formPlaintextTitle">
             <Form.Label column sm="3">图片5</Form.Label>
             <Col sm="9">
-              {this.state.userGroup == 'ui' ? <Form.Control name="pic_5th" type="file" /> : <Form.Control type='text' readOnly defaultValue={this.state.productData['pic_5th']} />}
+              {this.state.userGroup == 'ui' ? <Form.Control name="pic_5th" type="file" /> : <img className="image" src={this.state.productData['pic_5th']} />}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="formPlaintextTitle">
             <Form.Label column sm="3">图片6</Form.Label>
             <Col sm="9">
-              {this.state.userGroup == 'ui' ? <Form.Control name="pic_6th" type="file" /> : <Form.Control type='text' readOnly defaultValue={this.state.productData['pic_6th']} />}
+              {this.state.userGroup == 'ui' ? <Form.Control name="pic_6th" type="file" /> : <img className="image" src={this.state.productData['pic_6th']}/>}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="formPlaintextTitle">
             <Form.Label column sm="3">图片7</Form.Label>
             <Col sm="9">
-              {this.state.userGroup == 'ui' ? <Form.Control name="pic_7th" type="file" /> : <Form.Control type='text' readOnly defaultValue={this.state.productData['pic_7th']} />}
+              {this.state.userGroup == 'ui' ? <Form.Control name="pic_7th" type="file" /> : <img className="image" src={this.state.productData['pic_7th']} />}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="formPlaintextTitle">
             <Form.Label column sm="3">图片8</Form.Label>
             <Col sm="9">
-              {this.state.userGroup == 'ui' ? <Form.Control name="pic_8th" type="file" /> : <Form.Control type='text' readOnly defaultValue={this.state.productData['pic_8th']} />}
+              {this.state.userGroup == 'ui' ? <Form.Control name="pic_8th" type="file" /> : <img className="image" src={this.state.productData['pic_8th']} />}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="formPlaintextTitle">

@@ -261,7 +261,6 @@ class Products extends React.Component {
                 {(this.state.paginationNext) ?
                     <Button id="next" variant="primary" onClick={this.handlePage} type='button' >下一页</Button> :
                     <Button id="next" variant="primary" onClick={this.handlePage} type='button' disabled>下一页</Button>}
-
             </div>
         );
     }
