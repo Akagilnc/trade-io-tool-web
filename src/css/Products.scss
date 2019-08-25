@@ -1,0 +1,12 @@
+@import '../node_modules/react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+
+#products {
+    width:100%;
+    //max-width:45em;
+    margin:5em auto 2em auto;
+    border: 2px solid black;
+    #productsForm {
+        //width:100%;
+        //max-width:30em;
+    }
+}
