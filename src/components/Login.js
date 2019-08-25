@@ -14,12 +14,7 @@ class Login extends React.Component {
         this.handlePass = this.handlePass.bind(this);
         this.login = this.login.bind(this);
     }
-    componentWillUnmount(){
-        console.log('begin unmount');
-    }
-    componentDidCatch(){
-        console.log('begin catch');
-    }
+
     /*componentDidUpdate(){
         console.log("inside didupdate");
     }*/
@@ -62,7 +57,7 @@ render() {
     return (
         <div id="login">
             {/*<Button variant="primary">Primary</Button>*/}
-            <Form id="loginForm">
+            <Form id="loginForm" >
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Username</Form.Label>
                     {/*<Form.Control onChange={this.handleUsername} type="text" placeholder="Enter username" required />*/}
@@ -75,6 +70,7 @@ render() {
                 </Form.Group>
                 {/*<Button id="submit" onClick={this.login} type="submit">Submit</Button>*/}
                 <Button id="submit" onClick={this.props.onClick} type="button">Submit</Button>
+                {/*<Button id="submit" type="submit" onSubmit={this.props.onClick}>Submit</Button>*/}
                 {/*<input type="submit" onClick={this.login()} value="submit" />*/}
             </Form>
         </div>
