@@ -1,14 +1,20 @@
+image: node:alpine
+
+cache:
+  paths:
+    - node_modules
+
 stages:
-  - build
   - deploy
 
-build:
-  image: node:lts-alpine
-  script: 'npm run build'
-
-deploy:
+pages:
+  stage: deploy
+  script:
+    - npm install # Install all dependencies
+    - npm run build # Build for prod
+    - mv dist public # Move build files to public dir for Gitlab Pages
+  artifacts:
+    paths:
+      - dist # The built files for Gitlab Pages to serve
   only:
-    refs:
-      - TypeScript
-  image: nginx
-  script: 'cp dist/. /usr/share/nginx/html'
+    - TypeScript # Only run on master branch
