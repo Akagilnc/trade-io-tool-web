@@ -12,9 +12,9 @@ pages:
   script:
     - npm install # Install all dependencies
     - npm run build # Build for prod
-    - cp dist/. public/ # Move build files to public dir for Gitlab Pages
+    - mv dist public # Move build files to public dir for Gitlab Pages
   artifacts:
     paths:
-      - dist # The built files for Gitlab Pages to serve
+      - public # The built files for Gitlab Pages to serve
   only:
     - TypeScript # Only run on master branch
