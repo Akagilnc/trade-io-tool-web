@@ -1,0 +1,39 @@
+{
+  "name": "trade-port",
+  "version": "1.0.0",
+  "license": "AGPL-3.0",
+  "author": "shiy2008@gmail.com",
+  "dependencies": {
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "husky": "^3.0.4",
+    "lint-staged": "^9.2.4",
+    "parcel-bundler": "^1.12.3",
+    "prettier": "^1.18.2",
+    "typescript": "^3.5.3"
+  },
+  "scripts": {
+    "start": "parcel source/index.html",
+    "build": "parcel build source/index.html",
+    "test": "lint-staged"
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "lint-staged": {
+    "*.{html,md,less,json,yml,ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run build"
+    }
+  }
+}
