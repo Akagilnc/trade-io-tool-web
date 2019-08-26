@@ -1,15 +1,8 @@
-import React from "react";
-import { hot } from "react-hot-loader";
-import {Switch, Route} from 'react-router-dom';
-import "./App.scss";
-import { domain } from "./constants";
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
+import './App.scss';
+import { domain } from './constants';
 
-import Login from "./components/Login";
-import Products from "./components/Products";
-
-import Button from 'react-bootstrap/Button';
-class App extends React.Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,8 +10,8 @@ class App extends React.Component {
       username: '',
       password: '',
       token: '',
-      userGroup:'',
-    }
+      userGroup: ''
+    };
     this.handleLogin = this.handleLogin.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.auth = this.auth.bind(this);
@@ -47,19 +40,20 @@ class App extends React.Component {
 
     fetch(`${domain}io_tool/get-current-user`, {
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `token ${key}`
+        'Content-Type': 'application/json',
+        Authorization: `token ${key}`
       },
-      method: 'GET',
+      method: 'GET'
       //body: JSON.stringify(obj)
-    }).then(
-      /*(response) => {
+    })
+      .then(
+        /*(response) => {
         console.log(response);
         response.json();
       }*/
-      (response) => response.json()
-    ).then(
-      (data) => {
+        response => response.json()
+      )
+      .then(data => {
         //console.log('inside data');
         //console.log(data);
         this.setState({ userGroup: data.groups[0] });
@@ -67,43 +61,37 @@ class App extends React.Component {
           isLogin: true,
           token: key
         });
-      }
-    ).catch(
-      (errors) => {
+      })
+      .catch(() => {
         //console.log("inside error");
         this.setState({
           isLogin: false
         });
-      }
-    )
+      });
   }
   handleLogin() {
     //console.log("inside login");
     let obj = {};
     obj.username = this.state.username;
     obj.password = this.state.password;
-    fetch(`${domain}rest-auth/login/`,
-      {
-        headers: { "Content-Type": "application/json" },
-        method: 'POST',
-        body: JSON.stringify(obj)
-      }).then(
-        (response) => response.json()
-      ).then(
-        (data) => {
-          localStorage.setItem('tradeToolToken', data.key);
-          this.auth();
-          //console.log(localStorage.getItem('tradeToolToken'));
-        }
-      ).catch(
-        (errors) => console.log(errors)
-      )
+    fetch(`${domain}rest-auth/login/`, {
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      body: JSON.stringify(obj)
+    })
+      .then(response => response.json())
+      .then(data => {
+        localStorage.setItem('tradeToolToken', data.key);
+        this.auth();
+        //console.log(localStorage.getItem('tradeToolToken'));
+      })
+      .catch(errors => console.log(errors));
     //console.log(obj);
   }
 
   handleChange() {
-    console.log("inside handleChange");
-    if (event.target.id == "username") {
+    console.log('inside handleChange');
+    if (event.target.id == 'username') {
       //if(event.target.controlId=="username")
       this.setState({ username: event.target.value });
     } else {
@@ -111,7 +99,11 @@ class App extends React.Component {
     }
   }
   render() {
-    let component = this.state.isLogin ? <Products userGroup={this.state.userGroup} token={this.state.token} /> : <Login onChange={this.handleChange} onClick={this.handleLogin} />;
+    let component = this.state.isLogin ? (
+      <Products userGroup={this.state.userGroup} token={this.state.token} />
+    ) : (
+      <Login onChange={this.handleChange} onClick={this.handleLogin} />
+    );
     return (
       <div>
         {/*<Login />
@@ -121,5 +113,3 @@ class App extends React.Component {
     );
   }
 }
-
-export default hot(module)(App);
