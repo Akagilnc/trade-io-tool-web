@@ -1,0 +1,14 @@
+stages:
+  - build
+  - deploy
+
+build:
+  image: node:lts-alpine
+  script: 'npm run build'
+
+deploy:
+  only:
+    refs:
+      - TypeScript
+  image: nginx
+  script: 'cp dist/. /usr/share/nginx/html'
