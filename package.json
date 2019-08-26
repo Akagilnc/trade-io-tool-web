@@ -21,7 +21,7 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "start": "parcel source/index.html",
+    "start": "rm -rf dist/  &&  parcel source/index.html",
     "build": "parcel build source/index.html",
     "test": "lint-staged"
   },

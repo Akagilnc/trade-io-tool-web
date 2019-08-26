@@ -18,6 +18,11 @@ export async function request(
   return response.json();
 }
 
+interface ItemListFilter {
+  page: number;
+  keyword: string;
+}
+
 export function getSession() {
   return localStorage.account
     ? JSON.parse(localStorage.account)
@@ -29,4 +34,25 @@ export async function createSession(account: FormData) {
 
   localStorage.token = key;
   localStorage.account = JSON.stringify(await getSession());
+}
+
+export interface Product {
+  title_cn: string;
+  title_en: string;
+  owner: string;
+  created_time: string;
+  status: string;
+  keyword: string;
+  bought_price: number;
+  sell_price: number;
+}
+
+export function getProducts({
+  page,
+  keyword
+}: ItemListFilter): Promise<{ count: number; results: Product[] }> {
+  return request(
+    '/io_tool/products/?' +
+      new URLSearchParams({ page: page + '', search: keyword })
+  );
 }

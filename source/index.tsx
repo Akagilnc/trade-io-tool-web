@@ -4,6 +4,7 @@ import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
 import { Navbar, Container } from 'react-bootstrap';
 
 import Login from './page/Login';
+import ProductList from './page/Product';
 
 render(
   <Router>
@@ -23,6 +24,7 @@ render(
       )}
     />
     <Route path="/login" component={Login} />
+    <Route path="/products" component={ProductList} />
   </Router>,
   document.querySelector('body > main')
 );
