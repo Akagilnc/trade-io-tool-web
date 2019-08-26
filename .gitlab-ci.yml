@@ -1,5 +1,8 @@
 image: node:alpine
 
+variables:
+  PUBLIC_URL: /trade-io-tool
+
 cache:
   paths:
     - node_modules
