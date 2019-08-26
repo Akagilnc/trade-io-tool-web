@@ -15,6 +15,9 @@ export async function request(
     ...options
   });
 
+  if (response.status > 299)
+    throw Object.assign(new URIError(response.statusText), { response });
+
   return response.json();
 }
 
@@ -37,6 +40,8 @@ export async function createSession(account: FormData) {
 }
 
 export interface Product {
+  id: string;
+  SKU: string;
   title_cn: string;
   title_en: string;
   owner: string;
@@ -55,4 +60,8 @@ export function getProducts({
     '/io_tool/products/?' +
       new URLSearchParams({ page: page + '', search: keyword })
   );
+}
+
+export function getProduct(id: string): Promise<Product> {
+  return request(`/io_tool/products/${id}/`);
 }

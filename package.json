@@ -4,6 +4,7 @@
   "license": "AGPL-3.0",
   "author": "shiy2008@gmail.com",
   "dependencies": {
+    "browser-unhandled-rejection": "^1.0.2",
     "history": "^4.9.0",
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.12",
