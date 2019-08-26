@@ -1,16 +1,21 @@
 import * as React from 'react';
 import { render } from 'react-dom';
+import { HashRouter as Router, Route } from 'react-router-dom';
+import { Navbar, Container } from 'react-bootstrap';
 
-interface Props {
-  name: string;
-}
+import Login from './page/Login';
 
-class App extends React.Component<Props> {
-  render() {
-    return <div>Hello, {this.props.name}!</div>;
-  }
-}
+render(
+  <Router>
+    <Navbar bg="dark" expand="lg">
+      <Container>
+        <Navbar.Brand className="text-white" href="/">
+          Trade port
+        </Navbar.Brand>
+      </Container>
+    </Navbar>
 
-var mountNode = document.getElementById('app');
-
-render(<App name="Trade port" />, mountNode);
+    <Route path="/login" component={Login} />
+  </Router>,
+  document.querySelector('body > main')
+);
