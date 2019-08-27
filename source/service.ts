@@ -39,6 +39,12 @@ export async function createSession(account: FormData) {
   localStorage.account = JSON.stringify(await getSession());
 }
 
+export function destroySession() {
+  localStorage.clear();
+
+  location.replace('/');
+}
+
 export interface Product {
   id: string;
   SKU: string;

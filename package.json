@@ -15,9 +15,12 @@
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^4.3.5",
+    "autoprefixer": "^9.6.1",
     "husky": "^3.0.4",
+    "less": "^3.10.3",
     "lint-staged": "^9.2.4",
     "parcel-bundler": "^1.12.3",
+    "postcss-modules": "^1.4.1",
     "prettier": "^1.18.2",
     "typescript": "^3.5.3"
   },
@@ -25,6 +28,12 @@
     "start": "rm -rf dist/  &&  parcel source/index.html",
     "build": "parcel build source/index.html",
     "test": "lint-staged"
+  },
+  "postcss": {
+    "modules": true,
+    "plugins": {
+      "autoprefixer": true
+    }
   },
   "prettier": {
     "singleQuote": true

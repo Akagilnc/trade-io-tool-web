@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Card } from 'react-bootstrap';
 
 import { Product, getProduct } from '../../service';
-import { ProductField } from './constant';
 import PageBox from '../../component/PageBox';
+
+import { ProductField } from './constant';
+import style from './detail.css';
 
 export default class ProductDetail extends React.PureComponent<
   { match: any },
@@ -26,7 +28,11 @@ export default class ProductDetail extends React.PureComponent<
     return (
       <PageBox>
         <Card>
-          <Card.Img variant="top" src={state.pic_main} />
+          <Card.Img
+            variant="top"
+            className={style.banner}
+            src={state.pic_main}
+          />
           <Card.Body>
             <Card.Title title={state.title_en}>{state.title_cn}</Card.Title>
             <ul>
