@@ -1,15 +1,23 @@
 import * as React from 'react';
+import { History } from 'history';
 import { Link } from 'react-router-dom';
-import { Card } from 'react-bootstrap';
 
-import { Product, getProduct } from '../../service';
 import PageBox from '../../component/PageBox';
-
-import { ProductField } from './constant';
+import { Card, Button } from 'react-bootstrap';
 import style from './detail.css';
 
+import { ProductField } from './constant';
+import {
+  Product,
+  getProduct,
+  hasRole,
+  UserRole,
+  changeProductStatus,
+  ProductStatus
+} from '../../service';
+
 export default class ProductDetail extends React.PureComponent<
-  { match: any },
+  { match: any; history: History },
   Product
 > {
   async componentDidMount() {
@@ -20,6 +28,12 @@ export default class ProductDetail extends React.PureComponent<
     } = this.props;
 
     this.setState(await getProduct(id));
+  }
+
+  async changeStatus(value: ProductStatus) {
+    await changeProductStatus(this.state.id, value);
+
+    this.props.history.go(-1);
   }
 
   render() {
@@ -45,9 +59,50 @@ export default class ProductDetail extends React.PureComponent<
                 )
               )}
             </ul>
-            <Link className="btn btn-warning" to={`/product/${state.id}/edit`}>
-              Edit
-            </Link>
+            <div className="d-flex justify-content-around">
+              {hasRole(UserRole.admin, UserRole.dev, UserRole.ui) && (
+                <Link
+                  className="btn btn-warning"
+                  to={`/product/${state.id}/edit`}
+                >
+                  Edit
+                </Link>
+              )}
+              {hasRole(UserRole.dev) && (
+                <Button
+                  type="button"
+                  onClick={() => this.changeStatus(ProductStatus.commit)}
+                >
+                  Commit
+                </Button>
+              )}
+              {hasRole(UserRole.ui) && (
+                <Button
+                  type="button"
+                  onClick={() => this.changeStatus(ProductStatus.review)}
+                >
+                  Review
+                </Button>
+              )}
+              {hasRole(UserRole.admin) && (
+                <>
+                  <Button
+                    type="button"
+                    variant="success"
+                    onClick={() => this.changeStatus(ProductStatus.accept)}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="danger"
+                    onClick={() => this.changeStatus(ProductStatus.reject)}
+                  >
+                    Reject
+                  </Button>
+                </>
+              )}
+            </div>
           </Card.Body>
         </Card>
       </PageBox>

@@ -14,6 +14,7 @@ export default class ProductEdit extends React.PureComponent<{
   state = {
     catalogs: [],
     data: {
+      id: 0,
       title_cn: '',
       title_en: '',
       keyword: '',
@@ -21,6 +22,9 @@ export default class ProductEdit extends React.PureComponent<{
       catalog: '',
       bought_price: 0.01,
       sell_price: 0.01,
+      product_width: 0.01,
+      product_high: 0.01,
+      product_length: 0.01,
       product_weight: 0.01,
       package_weight: 0.01,
       amount: 0.01,
@@ -66,6 +70,9 @@ export default class ProductEdit extends React.PureComponent<{
             <Card.Title>Edit</Card.Title>
 
             <Form onReset={this.reset} onSubmit={this.submit}>
+              {!data.id ? null : (
+                <input type="hidden" name="id" value={data.id} />
+              )}
               <Form.Row>
                 <Form.Group as={Col} controlId="title_cn">
                   <Form.Label>{ProductField.title_cn}</Form.Label>
@@ -73,7 +80,7 @@ export default class ProductEdit extends React.PureComponent<{
                     type="text"
                     name="title_cn"
                     required
-                    value={data.title_cn}
+                    defaultValue={data.title_cn}
                   />
                 </Form.Group>
 
@@ -83,7 +90,7 @@ export default class ProductEdit extends React.PureComponent<{
                     type="text"
                     name="title_en"
                     required
-                    value={data.title_en}
+                    defaultValue={data.title_en}
                   />
                 </Form.Group>
 
@@ -93,7 +100,7 @@ export default class ProductEdit extends React.PureComponent<{
                     type="text"
                     name="keyword"
                     required
-                    value={data.keyword}
+                    defaultValue={data.keyword}
                   />
                 </Form.Group>
               </Form.Row>
@@ -105,7 +112,7 @@ export default class ProductEdit extends React.PureComponent<{
                     type="text"
                     name="SKU"
                     required
-                    value={data.SKU}
+                    defaultValue={data.SKU}
                   />
                 </Form.Group>
 
@@ -115,7 +122,7 @@ export default class ProductEdit extends React.PureComponent<{
                     {catalogs.map(({ id, name }, index) => (
                       <option
                         key={index}
-                        value={id}
+                        defaultValue={id}
                         selected={name === data.catalog}
                       >
                         {name}
@@ -132,8 +139,9 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="bought_price"
                     required
-                    min="0.00"
-                    value={data.bought_price + ''}
+                    min="0.01"
+                    step="0.01"
+                    defaultValue={data.bought_price + ''}
                   />
                 </Form.Group>
 
@@ -143,8 +151,9 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="sell_price"
                     required
-                    min="0.00"
-                    value={data.sell_price + ''}
+                    min="0.01"
+                    step="0.01"
+                    defaultValue={data.sell_price + ''}
                   />
                 </Form.Group>
                 <Form.Group as={Col} controlId="amount">
@@ -196,8 +205,9 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="trans_price"
                     required
-                    min="0"
-                    defaultValue="0"
+                    min="0.01"
+                    step="0.01"
+                    defaultValue={data.trans_price + ''}
                   />
                 </Form.Group>
               </Form.Row>
@@ -209,7 +219,8 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="product_weight"
                     required
-                    min="0.00"
+                    min="0.01"
+                    step="0.01"
                     value={data.product_weight + ''}
                   />
                 </Form.Group>
@@ -220,8 +231,9 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="package_weight"
                     required
-                    min="0.00"
-                    value={data.package_weight + ''}
+                    min="0.01"
+                    step="0.01"
+                    defaultValue={data.package_weight + ''}
                   />
                 </Form.Group>
               </Form.Row>
@@ -232,8 +244,9 @@ export default class ProductEdit extends React.PureComponent<{
                   <Form.Control
                     type="number"
                     name="product_length"
-                    min="0"
-                    defaultValue="0"
+                    min="0.01"
+                    step="0.01"
+                    defaultValue={data.product_length + ''}
                   />
                 </Form.Group>
 
@@ -242,8 +255,9 @@ export default class ProductEdit extends React.PureComponent<{
                   <Form.Control
                     type="number"
                     name="product_width"
-                    min="0"
-                    defaultValue="0"
+                    min="0.01"
+                    step="0.01"
+                    defaultValue={data.product_width + ''}
                   />
                 </Form.Group>
 
@@ -252,8 +266,9 @@ export default class ProductEdit extends React.PureComponent<{
                   <Form.Control
                     type="number"
                     name="product_high"
-                    min="0"
-                    defaultValue="0"
+                    min="0.01"
+                    step="0.01"
+                    defaultValue={data.product_high + ''}
                   />
                 </Form.Group>
               </Form.Row>
@@ -309,7 +324,7 @@ export default class ProductEdit extends React.PureComponent<{
                     type="url"
                     name="product_link_1688"
                     required
-                    value={data.product_link_1688}
+                    defaultValue={data.product_link_1688}
                   />
                 </Form.Group>
                 <Form.Group as={Col} controlId="product_link_ebay">

@@ -21,33 +21,59 @@ export async function request(
   return response.json();
 }
 
-interface ItemListFilter {
-  page: number;
-  catalog: string;
-  keyword: string;
-}
-
-export function getSession() {
-  return localStorage.account
-    ? JSON.parse(localStorage.account)
-    : request('/io_tool/get-current-user/');
-}
-
 export async function createSession(account: FormData) {
   const { key } = await request('/rest-auth/login/', 'POST', account);
 
   localStorage.token = key;
-  localStorage.account = JSON.stringify(await getSession());
+  localStorage.account = JSON.stringify(
+    await request('/io_tool/get-current-user/')
+  );
+}
+
+export enum UserRole {
+  dev = 'dev',
+  ui = 'ui',
+  admin = 'admin',
+  sell = 'sell'
+}
+
+interface UserProfile {
+  groups: UserRole[];
+}
+
+var account: UserProfile | null;
+
+export function getSession(): UserProfile | null {
+  return (
+    account ||
+    (account = localStorage.account && JSON.parse(localStorage.account))
+  );
 }
 
 export function destroySession() {
+  account = null;
   localStorage.clear();
 
   location.replace('/');
 }
 
+export function hasRole(...names: UserRole[]) {
+  const user = getSession();
+
+  if (user)
+    for (const role of names) if (user.groups.includes(role)) return true;
+
+  return false;
+}
+
 export function getCatalogs() {
   return request('/io_tool/catalogs/');
+}
+
+interface ItemListFilter {
+  page: number;
+  catalog: string;
+  keyword: string;
 }
 
 export interface Product {
@@ -85,4 +111,15 @@ export function getProduct(id: string): Promise<Product> {
 
 export function updateProduct(data: FormData) {
   return request('/io_tool/products/', 'POST', data);
+}
+
+export enum ProductStatus {
+  commit = 'commit',
+  review = 'review',
+  accept = 'accept',
+  reject = 'reject'
+}
+
+export function changeProductStatus(id: string, value: ProductStatus) {
+  return request(`/io_tool/products/${id}/${value}/`, 'POST');
 }

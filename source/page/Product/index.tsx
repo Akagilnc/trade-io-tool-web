@@ -6,7 +6,13 @@ import { Link } from 'react-router-dom';
 import { Table, Pagination, Form, Col, Button } from 'react-bootstrap';
 import PageBox from '../../component/PageBox';
 
-import { getCatalogs, getProducts, Product } from '../../service';
+import {
+  getCatalogs,
+  getProducts,
+  Product,
+  hasRole,
+  UserRole
+} from '../../service';
 import { ProductField } from './constant';
 
 export default class ProductList extends React.PureComponent {
@@ -198,16 +204,20 @@ export default class ProductList extends React.PureComponent {
           <Form.Group as={Col}>
             <Button type="submit">Search</Button>
           </Form.Group>
-          <Form.Group as={Col}>
-            <Link to="/product/0/edit" className="btn btn-warning">
-              Create
-            </Link>
-          </Form.Group>
-          <Form.Group as={Col}>
-            <Button type="button" variant="success" onClick={this.exportList}>
-              Export
-            </Button>
-          </Form.Group>
+          {hasRole(UserRole.admin, UserRole.dev) && (
+            <Form.Group as={Col}>
+              <Link to="/product/0/edit" className="btn btn-warning">
+                Create
+              </Link>
+            </Form.Group>
+          )}
+          {hasRole(UserRole.admin, UserRole.sell) && (
+            <Form.Group as={Col}>
+              <Button type="button" variant="success" onClick={this.exportList}>
+                Export
+              </Button>
+            </Form.Group>
+          )}
         </Form.Row>
       </Form>
     );
