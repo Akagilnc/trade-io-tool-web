@@ -5,13 +5,17 @@
   "author": "shiy2008@gmail.com",
   "dependencies": {
     "browser-unhandled-rejection": "^1.0.2",
+    "file-saver": "^2.0.2",
     "history": "^4.9.0",
+    "json2csv": "^4.5.2",
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.12",
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.0.1"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.1",
+    "@types/json2csv": "^4.5.0",
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^4.3.5",

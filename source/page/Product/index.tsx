@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { parseAsync } from 'json2csv';
+import { saveAs } from 'file-saver';
 
 import { Link } from 'react-router-dom';
 import { Table, Pagination, Form, Col, Button } from 'react-bootstrap';
@@ -15,6 +17,16 @@ export default class ProductList extends React.PureComponent {
     list: [],
     catalogs: []
   };
+
+  tBody = React.createRef<HTMLTableSectionElement>();
+
+  get checkList(): HTMLInputElement[] | null {
+    const tBody = this.tBody.current;
+
+    return (
+      tBody && Array.from(tBody.querySelectorAll('input[type="checkbox"]'))
+    );
+  }
 
   async componentDidMount() {
     this.setState({
@@ -50,6 +62,13 @@ export default class ProductList extends React.PureComponent {
     );
   }
 
+  checkAll = (event: React.MouseEvent) => {
+    const { checked } = event.target as HTMLInputElement,
+      { checkList } = this;
+
+    if (checkList) for (const input of checkList) input.checked = checked;
+  };
+
   renderTable() {
     const { list } = this.state;
 
@@ -57,6 +76,9 @@ export default class ProductList extends React.PureComponent {
       <Table responsive striped bordered hover>
         <thead>
           <tr className="text-nowrap">
+            <th>
+              <Form.Check type="checkbox" onClick={this.checkAll} />
+            </th>
             <th>{ProductField.SKU}</th>
             <th>名称</th>
             <th>{ProductField.catalog}</th>
@@ -72,7 +94,7 @@ export default class ProductList extends React.PureComponent {
             <th>{ProductField.status}</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody ref={this.tBody}>
           {list.map(
             ({
               created_time,
@@ -92,6 +114,9 @@ export default class ProductList extends React.PureComponent {
               package_weight
             }: Product) => (
               <tr key={created_time}>
+                <td>
+                  <Form.Check type="checkbox" />
+                </td>
                 <td>
                   <Link to={'/products/' + id}>{SKU}</Link>
                 </td>
@@ -133,6 +158,20 @@ export default class ProductList extends React.PureComponent {
     if (!input.value.trim()) this.turnTo();
   };
 
+  exportList = async (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    const { checkList } = this;
+
+    if (!checkList) return;
+
+    const list = this.state.list.filter((_, index) => checkList[index].checked);
+
+    if (!list[0]) return;
+
+    saveAs(new Blob([await parseAsync(list)]), `products-${Date.now()}.csv`);
+  };
+
   renderForm() {
     const { catalogs } = this.state;
 
@@ -163,6 +202,11 @@ export default class ProductList extends React.PureComponent {
             <Link to="/product/0/edit" className="btn btn-warning">
               Create
             </Link>
+          </Form.Group>
+          <Form.Group as={Col}>
+            <Button type="button" variant="success" onClick={this.exportList}>
+              Export
+            </Button>
           </Form.Group>
         </Form.Row>
       </Form>
