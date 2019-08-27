@@ -1,10 +1,10 @@
 import * as React from 'react';
 
 import { Link } from 'react-router-dom';
-import { Table, Pagination, Form, Button } from 'react-bootstrap';
+import { Table, Pagination, Form, Col, Button } from 'react-bootstrap';
 import PageBox from '../../component/PageBox';
 
-import { getProducts, Product } from '../../service';
+import { getCatalogs, getProducts, Product } from '../../service';
 import { ProductField } from './constant';
 
 export default class ProductList extends React.PureComponent {
@@ -12,15 +12,20 @@ export default class ProductList extends React.PureComponent {
     pageSize: 20,
     totalCount: 0,
     currentPage: 0,
-    list: []
+    list: [],
+    catalogs: []
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.setState({
+      catalogs: [{ name: 'Catalog', id: '' }, ...(await getCatalogs())]
+    });
+
     this.turnTo();
   }
 
-  async turnTo(page = 1, keyword = '') {
-    const { count, results } = await getProducts({ page, keyword });
+  async turnTo(page = 1, catalog = '', keyword = '') {
+    const { count, results } = await getProducts({ page, catalog, keyword });
 
     this.setState({ totalCount: count, currentPage: page, list: results });
   }
@@ -54,9 +59,14 @@ export default class ProductList extends React.PureComponent {
           <tr className="text-nowrap">
             <th>{ProductField.SKU}</th>
             <th>名称</th>
+            <th>{ProductField.catalog}</th>
             <th>{ProductField.keyword}</th>
             <th>{ProductField.bought_price}</th>
             <th>{ProductField.sell_price}</th>
+            <th>{ProductField.trans_price}</th>
+            <th>{ProductField.amount}</th>
+            <th>{ProductField.product_weight}</th>
+            <th>{ProductField.package_weight}</th>
             <th>创建者</th>
             <th>创建时间</th>
             <th>{ProductField.status}</th>
@@ -72,18 +82,28 @@ export default class ProductList extends React.PureComponent {
               title_en,
               owner,
               status,
+              catalog,
               keyword,
               bought_price,
-              sell_price
+              sell_price,
+              trans_price,
+              amount,
+              product_weight,
+              package_weight
             }: Product) => (
               <tr key={created_time}>
                 <td>
                   <Link to={'/products/' + id}>{SKU}</Link>
                 </td>
                 <td title={title_en}>{title_cn}</td>
+                <td>{catalog}</td>
                 <td>{keyword}</td>
                 <td>{bought_price}</td>
                 <td>{sell_price}</td>
+                <td>{trans_price}</td>
+                <td>{amount}</td>
+                <td>{product_weight}</td>
+                <td>{package_weight}</td>
                 <td>{owner}</td>
                 <td>{new Date(created_time).toLocaleString()}</td>
                 <td>{status}</td>
@@ -98,9 +118,13 @@ export default class ProductList extends React.PureComponent {
   onSearch = (event: React.FormEvent) => {
     event.preventDefault();
 
-    this.turnTo(1, new FormData(event.target as HTMLFormElement).get(
-      'keyword'
-    ) as string);
+    const data = new FormData(event.target as HTMLFormElement);
+
+    this.turnTo(
+      1,
+      data.get('catalog') as string,
+      data.get('keyword') as string
+    );
   };
 
   onClear = (event: any) => {
@@ -110,24 +134,37 @@ export default class ProductList extends React.PureComponent {
   };
 
   renderForm() {
+    const { catalogs } = this.state;
+
     return (
-      <Form inline className="mb-3" onSubmit={this.onSearch}>
-        <Form.Group className="mr-3">
-          <Form.Control
-            type="search"
-            name="keyword"
-            placeholder="Keyword"
-            onChange={this.onClear}
-          />
-        </Form.Group>
-        <Form.Group className="mr-3">
-          <Button type="submit">Search</Button>
-        </Form.Group>
-        <Form.Group>
-          <Link to="/product/0/edit" className="btn btn-warning">
-            Create
-          </Link>
-        </Form.Group>
+      <Form onSubmit={this.onSearch}>
+        <Form.Row>
+          <Form.Group as={Col}>
+            <Form.Control as="select" name="catalog">
+              {catalogs.map(({ id, name }) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+          <Form.Group as={Col}>
+            <Form.Control
+              type="search"
+              name="keyword"
+              placeholder="Keyword"
+              onChange={this.onClear}
+            />
+          </Form.Group>
+          <Form.Group as={Col}>
+            <Button type="submit">Search</Button>
+          </Form.Group>
+          <Form.Group as={Col}>
+            <Link to="/product/0/edit" className="btn btn-warning">
+              Create
+            </Link>
+          </Form.Group>
+        </Form.Row>
       </Form>
     );
   }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 
 import { Product, getProduct } from '../../service';
@@ -44,6 +45,9 @@ export default class ProductDetail extends React.PureComponent<
                 )
               )}
             </ul>
+            <Link className="btn btn-warning" to={`/product/${state.id}/edit`}>
+              Edit
+            </Link>
           </Card.Body>
         </Card>
       </PageBox>

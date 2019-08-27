@@ -23,6 +23,7 @@ export async function request(
 
 interface ItemListFilter {
   page: number;
+  catalog: string;
   keyword: string;
 }
 
@@ -45,10 +46,8 @@ export function destroySession() {
   location.replace('/');
 }
 
-export async function getCatalogs() {
-  const { results } = await request('/io_tool/catalogs/');
-
-  return results;
+export function getCatalogs() {
+  return request('/io_tool/catalogs/');
 }
 
 export interface Product {
@@ -59,21 +58,31 @@ export interface Product {
   owner: string;
   created_time: string;
   status: string;
+  catalog: string;
   keyword: string;
+  product_weight: number;
+  package_weight: number;
   bought_price: number;
   sell_price: number;
+  trans_price: number;
+  amount: number;
 }
 
 export function getProducts({
   page,
+  catalog,
   keyword
 }: ItemListFilter): Promise<{ count: number; results: Product[] }> {
   return request(
     '/io_tool/products/?' +
-      new URLSearchParams({ page: page + '', search: keyword })
+      new URLSearchParams({ page: page + '', catalog, search: keyword })
   );
 }
 
 export function getProduct(id: string): Promise<Product> {
   return request(`/io_tool/products/${id}/`);
+}
+
+export function updateProduct(data: FormData) {
+  return request('/io_tool/products/', 'POST', data);
 }
