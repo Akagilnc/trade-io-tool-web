@@ -64,36 +64,39 @@ export default class ProductEdit extends React.PureComponent<{
         <Card>
           <Card.Body>
             <Card.Title>Edit</Card.Title>
+
             <Form onReset={this.reset} onSubmit={this.submit}>
-              <Form.Group controlId="title_cn">
-                <Form.Label>{ProductField.title_cn}</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="title_cn"
-                  required
-                  value={data.title_cn}
-                />
-              </Form.Group>
+              <Form.Row>
+                <Form.Group as={Col} controlId="title_cn">
+                  <Form.Label>{ProductField.title_cn}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="title_cn"
+                    required
+                    value={data.title_cn}
+                  />
+                </Form.Group>
 
-              <Form.Group controlId="title_en">
-                <Form.Label>{ProductField.title_en}</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="title_en"
-                  required
-                  value={data.title_en}
-                />
-              </Form.Group>
+                <Form.Group as={Col} controlId="title_en">
+                  <Form.Label>{ProductField.title_en}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="title_en"
+                    required
+                    value={data.title_en}
+                  />
+                </Form.Group>
 
-              <Form.Group controlId="keyword">
-                <Form.Label>{ProductField.keyword}</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="keyword"
-                  required
-                  value={data.keyword}
-                />
-              </Form.Group>
+                <Form.Group as={Col} controlId="keyword">
+                  <Form.Label>{ProductField.keyword}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="keyword"
+                    required
+                    value={data.keyword}
+                  />
+                </Form.Group>
+              </Form.Row>
 
               <Form.Row>
                 <Form.Group as={Col} controlId="SKU">
