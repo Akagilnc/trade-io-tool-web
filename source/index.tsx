@@ -8,6 +8,7 @@ import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
 import Login from './page/Login';
 import ProductList from './page/Product';
 import ProductDetail from './page/Product/detail';
+import ProductEdit from './page/Product/edit';
 import AppHeader from './component/AppHeader';
 
 import { destroySession } from './service';
@@ -32,6 +33,7 @@ render(
     <Route path="/login" component={Login} />
     <Route path="/products" exact component={ProductList} />
     <Route path="/products/:id" component={ProductDetail} />
+    <Route path="/product/:id/edit" component={ProductEdit} />
   </Router>,
   document.querySelector('body > main')
 );

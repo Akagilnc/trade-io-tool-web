@@ -124,7 +124,7 @@ export default class ProductList extends React.PureComponent {
           <Button type="submit">Search</Button>
         </Form.Group>
         <Form.Group>
-          <Link to="/product" className="btn btn-warning">
+          <Link to="/product/0/edit" className="btn btn-warning">
             Create
           </Link>
         </Form.Group>

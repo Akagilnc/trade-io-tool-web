@@ -45,6 +45,12 @@ export function destroySession() {
   location.replace('/');
 }
 
+export async function getCatalogs() {
+  const { results } = await request('/io_tool/catalogs/');
+
+  return results;
+}
+
 export interface Product {
   id: string;
   SKU: string;

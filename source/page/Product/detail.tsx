@@ -38,7 +38,7 @@ export default class ProductDetail extends React.PureComponent<
             <ul>
               {Object.entries(ProductField).map(([name, label]: string[]) =>
                 skip_keys.includes(name) ? null : (
-                  <li>
+                  <li key={name}>
                     {label}：{state[name]}
                   </li>
                 )
