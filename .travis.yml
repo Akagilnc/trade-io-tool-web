@@ -6,9 +6,9 @@ cache:
     - node_modules
 script:
   - npm run build
-  - docker build -t akagilnc/trade-io-tool .
+  - docker build -t akagilnc/trade-io-tool-web .
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push akagilnc/trade-io-tool
+  - docker push akagilnc/trade-io-tool-web
 
 deploy:
   provider: pages
