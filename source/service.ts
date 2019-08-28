@@ -10,12 +10,15 @@ export async function request(
   if (localStorage.token)
     headers = { Authorization: `token ${localStorage.token}`, ...headers };
 
-  const response = await fetch(new URL(path, 'http://52.83.152.70:8000') + '', {
-    method,
-    body,
-    headers,
-    ...options
-  });
+  const response = await fetch(
+    new URL(path, 'http://47.108.88.218:8000') + '',
+    {
+      method,
+      body,
+      headers,
+      ...options
+    }
+  );
 
   if (response.status > 299)
     throw Object.assign(new URIError(response.statusText), { response });
