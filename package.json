@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "rm -rf dist/  &&  parcel source/index.html",
-    "build": "parcel build source/index.html",
+    "build": "parcel build source/index.html --public-url ./",
     "test": "lint-staged"
   },
   "postcss": {
