@@ -5,6 +5,7 @@
   "author": "shiy2008@gmail.com",
   "dependencies": {
     "browser-unhandled-rejection": "^1.0.2",
+    "classnames": "^2.2.6",
     "file-saver": "^2.0.2",
     "history": "^4.9.0",
     "json2csv": "^4.5.2",
@@ -15,6 +16,7 @@
     "react-router-dom": "^5.0.1"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.9",
     "@types/file-saver": "^2.0.1",
     "@types/json2csv": "^4.5.0",
     "@types/lodash.memoize": "^4.1.6",

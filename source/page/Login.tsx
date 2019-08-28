@@ -7,15 +7,26 @@ import PageBox from '../component/PageBox';
 import { createSession } from '../service';
 
 export default class Login extends React.PureComponent<{ history: History }> {
+  state = {
+    loading: false
+  };
+
   onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    await createSession(new FormData(event.target as HTMLFormElement));
+    this.setState({ loading: true });
+    try {
+      await createSession(new FormData(event.target as HTMLFormElement));
 
-    this.props.history.replace('/');
+      this.props.history.replace('/');
+    } finally {
+      this.setState({ loading: false });
+    }
   };
 
   render() {
+    const { loading } = this.state;
+
     return (
       <PageBox>
         <Card>
@@ -33,7 +44,7 @@ export default class Login extends React.PureComponent<{ history: History }> {
                 <Form.Control type="password" name="password" required />
               </Form.Group>
 
-              <Button type="submit" variant="primary">
+              <Button type="submit" variant="primary" disabled={loading}>
                 Submit
               </Button>
             </Form>

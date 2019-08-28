@@ -3,6 +3,7 @@ import { History } from 'history';
 
 import { Card, Form, Col, Button } from 'react-bootstrap';
 import PageBox from '../../component/PageBox';
+import FileInput from '../../component/FileInput';
 
 import { ProductField } from './constant';
 import { getCatalogs, updateProduct, getProduct } from '../../service';
@@ -12,6 +13,7 @@ export default class ProductEdit extends React.PureComponent<{
   history: History;
 }> {
   state = {
+    loading: false,
     catalogs: [],
     data: {
       id: 0,
@@ -29,7 +31,16 @@ export default class ProductEdit extends React.PureComponent<{
       package_weight: 0.01,
       amount: 0.01,
       trans_price: 0.01,
-      product_link_1688: ''
+      product_link_1688: '',
+      pic_main: '',
+      pic_1st: '',
+      pic_2nd: '',
+      pic_3rd: '',
+      pic_4th: '',
+      pic_5th: '',
+      pic_6th: '',
+      pic_7th: '',
+      pic_8th: ''
     }
   };
 
@@ -46,9 +57,10 @@ export default class ProductEdit extends React.PureComponent<{
 
   reset = () => this.props.history.go(-1);
 
-  submit = async (event: React.FormEvent) => {
+  onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    this.setState({ loading: true });
     try {
       const { id } = await updateProduct(
         new FormData(event.target as HTMLFormElement)
@@ -57,11 +69,13 @@ export default class ProductEdit extends React.PureComponent<{
       this.props.history.replace('/products/' + id);
     } catch {
       window.alert('Data incorrect!');
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
   render() {
-    const { catalogs, data } = this.state;
+    const { loading, catalogs, data } = this.state;
 
     return (
       <PageBox>
@@ -69,7 +83,7 @@ export default class ProductEdit extends React.PureComponent<{
           <Card.Body>
             <Card.Title>Edit</Card.Title>
 
-            <Form onReset={this.reset} onSubmit={this.submit}>
+            <Form onReset={this.reset} onSubmit={this.onSubmit}>
               {!data.id ? null : (
                 <input type="hidden" name="id" value={data.id} />
               )}
@@ -276,44 +290,81 @@ export default class ProductEdit extends React.PureComponent<{
               <Form.Row>
                 <Form.Group as={Col} controlId="pic_main">
                   <Form.Label>{ProductField.pic_main}</Form.Label>
-                  <Form.Control type="file" name="pic_main" required />
+                  <FileInput
+                    accept="image/*"
+                    name="pic_main"
+                    required
+                    value={data.pic_main}
+                  />
                 </Form.Group>
               </Form.Row>
 
               <Form.Row>
                 <Form.Group as={Col} controlId="pic_1st">
                   <Form.Label>{ProductField.pic_1st}</Form.Label>
-                  <Form.Control type="file" name="pic_1st" />
+                  <FileInput
+                    accept="image/*"
+                    name="pic_1st"
+                    value={data.pic_1st}
+                  />
                 </Form.Group>
                 <Form.Group as={Col} controlId="pic_2nd">
                   <Form.Label>{ProductField.pic_2nd}</Form.Label>
-                  <Form.Control type="file" name="pic_2nd" />
+                  <FileInput
+                    accept="image/*"
+                    name="pic_2nd"
+                    value={data.pic_2nd}
+                  />
                 </Form.Group>
                 <Form.Group as={Col} controlId="pic_3rd">
                   <Form.Label>{ProductField.pic_3rd}</Form.Label>
-                  <Form.Control type="file" name="pic_3rd" />
+                  <FileInput
+                    accept="image/*"
+                    name="pic_3rd"
+                    value={data.pic_3rd}
+                  />
                 </Form.Group>
                 <Form.Group as={Col} controlId="pic_4th">
                   <Form.Label>{ProductField.pic_4th}</Form.Label>
-                  <Form.Control type="file" name="pic_4th" />
+                  <FileInput
+                    accept="image/*"
+                    name="pic_4th"
+                    value={data.pic_4th}
+                  />
                 </Form.Group>
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} controlId="pic_5th">
                   <Form.Label>{ProductField.pic_5th}</Form.Label>
-                  <Form.Control type="file" name="pic_5th" />
+                  <FileInput
+                    accept="image/*"
+                    name="pic_5th"
+                    value={data.pic_5th}
+                  />
                 </Form.Group>
                 <Form.Group as={Col} controlId="pic_6th">
                   <Form.Label>{ProductField.pic_6th}</Form.Label>
-                  <Form.Control type="file" name="pic_6th" />
+                  <FileInput
+                    accept="image/*"
+                    name="pic_6th"
+                    value={data.pic_6th}
+                  />
                 </Form.Group>
                 <Form.Group as={Col} controlId="pic_7th">
                   <Form.Label>{ProductField.pic_7th}</Form.Label>
-                  <Form.Control type="file" name="pic_7th" />
+                  <FileInput
+                    accept="image/*"
+                    name="pic_7th"
+                    value={data.pic_7th}
+                  />
                 </Form.Group>
                 <Form.Group as={Col} controlId="pic_8th">
                   <Form.Label>{ProductField.pic_8th}</Form.Label>
-                  <Form.Control type="file" name="pic_8th" />
+                  <FileInput
+                    accept="image/*"
+                    name="pic_8th"
+                    value={data.pic_8th}
+                  />
                 </Form.Group>
               </Form.Row>
 
@@ -354,7 +405,9 @@ export default class ProductEdit extends React.PureComponent<{
 
               <Form.Row>
                 <Form.Group as={Col} className="text-center">
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit" disabled={loading}>
+                    Submit
+                  </Button>
                 </Form.Group>
                 <Form.Group as={Col} className="text-center">
                   <Button type="reset" variant="danger">

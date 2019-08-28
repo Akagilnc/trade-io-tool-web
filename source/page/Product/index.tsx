@@ -17,6 +17,7 @@ import { ProductField } from './constant';
 
 export default class ProductList extends React.PureComponent {
   state = {
+    loading: false,
     pageSize: 20,
     totalCount: 0,
     currentPage: 0,
@@ -43,9 +44,14 @@ export default class ProductList extends React.PureComponent {
   }
 
   async turnTo(page = 1, catalog = '', keyword = '') {
-    const { count, results } = await getProducts({ page, catalog, keyword });
+    this.setState({ loading: true });
+    try {
+      const { count, results } = await getProducts({ page, catalog, keyword });
 
-    this.setState({ totalCount: count, currentPage: page, list: results });
+      this.setState({ totalCount: count, currentPage: page, list: results });
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   renderPagination() {
@@ -151,7 +157,7 @@ export default class ProductList extends React.PureComponent {
 
     const data = new FormData(event.target as HTMLFormElement);
 
-    this.turnTo(
+    return this.turnTo(
       1,
       data.get('catalog') as string,
       data.get('keyword') as string
@@ -175,11 +181,14 @@ export default class ProductList extends React.PureComponent {
 
     if (!list[0]) return;
 
-    saveAs(new Blob([await parseAsync(list)]), `products-${Date.now()}.csv`);
+    saveAs(
+      new Blob([await parseAsync(list, { withBOM: true })]),
+      `products-${Date.now()}.csv`
+    );
   };
 
   renderForm() {
-    const { catalogs } = this.state;
+    const { loading, catalogs } = this.state;
 
     return (
       <Form onSubmit={this.onSearch}>
@@ -202,7 +211,9 @@ export default class ProductList extends React.PureComponent {
             />
           </Form.Group>
           <Form.Group as={Col}>
-            <Button type="submit">Search</Button>
+            <Button type="submit" disabled={loading}>
+              Search
+            </Button>
           </Form.Group>
           {hasRole(UserRole.admin, UserRole.dev) && (
             <Form.Group as={Col}>
