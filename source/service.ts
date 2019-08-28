@@ -1,4 +1,4 @@
-import { memoize } from 'lodash';
+import memoize from 'lodash.memoize';
 
 export async function request(
   path: string,
