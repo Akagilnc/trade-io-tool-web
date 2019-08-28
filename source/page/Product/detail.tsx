@@ -2,10 +2,10 @@ import * as React from 'react';
 import { History } from 'history';
 
 import PageBox from '../../component/PageBox';
-import { Card, Button, ListGroup } from 'react-bootstrap';
+import { Card, Button, Carousel, ListGroup, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-import style from './detail.css';
+import style from './detail.less';
 import { ProductField } from './constant';
 import {
   Product,
@@ -38,40 +38,63 @@ export default class ProductDetail extends React.PureComponent<
 
   render() {
     const state: any = this.state || {},
-      skip_keys = ['pic_main', 'title_en', 'title_cn'];
+      [images, texts] = Object.entries(ProductField).reduce(
+        (list: string[][][], [name, label]: string[]) => {
+          if (name.startsWith('pic_')) list[0].push([name, label]);
+          else if (!name.startsWith('title_')) list[1].push([name, label]);
+
+          return list;
+        },
+        [[], []]
+      );
 
     return (
       <PageBox>
         <Card>
-          <Card.Img
-            variant="top"
-            className={style.banner}
-            src={state.pic_main}
-          />
-          <Card.Body>
+          <Card.Body className="d-flex flex-column">
             <Card.Title title={state.title_en}>{state.title_cn}</Card.Title>
-            <ListGroup variant="flush">
-              {Object.entries(ProductField).map(([name, label]: string[]) => {
-                if (skip_keys.includes(name)) return;
 
-                var content = state[name];
+            <Carousel className={style.slides}>
+              {images.map(([name, label]: string[]) => (
+                <Carousel.Item>
+                  <div
+                    className={style['background-image']}
+                    style={{ backgroundImage: `url(${state[name]})` }}
+                  />
+                  <Carousel.Caption>
+                    <h3>{label}</h3>
+                  </Carousel.Caption>
+                </Carousel.Item>
+              ))}
+            </Carousel>
 
-                if (!content || !(content + '').trim()) return;
+            <Table responsive striped bordered hover className="mt-3">
+              <tbody>
+                {texts.map(([name, label]: string[]) => {
+                  const content = state[name];
 
-                if (name.startsWith('pic_'))
-                  content = <img src={content} title={label} />;
-                else if (name.includes('link_'))
-                  content = (
-                    <a target="_blank" href={content}>
-                      {label}
-                    </a>
+                  return (
+                    content &&
+                    (content + '').trim() && (
+                      <tr key={name}>
+                        <th className="text-nowrap">{label}</th>
+                        <td>
+                          {name.includes('link_') ? (
+                            <a target="_blank" href={content}>
+                              {content}
+                            </a>
+                          ) : (
+                            content
+                          )}
+                        </td>
+                      </tr>
+                    )
                   );
-                else content = `${label}：${content}`;
+                })}
+              </tbody>
+            </Table>
 
-                return <ListGroup.Item key={name}>{content}</ListGroup.Item>;
-              })}
-            </ListGroup>
-            <div className="d-flex justify-content-around">
+            <div className="d-flex justify-content-around mt-3">
               {hasRole(UserRole.admin, UserRole.dev, UserRole.ui) && (
                 <Link
                   className="btn btn-warning"
