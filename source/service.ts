@@ -1,3 +1,5 @@
+import { memoize } from 'lodash';
+
 export async function request(
   path: string,
   method?: string,
@@ -41,17 +43,12 @@ interface UserProfile {
   groups: UserRole[];
 }
 
-var account: UserProfile | null;
-
-export function getSession(): UserProfile | null {
-  return (
-    account ||
-    (account = localStorage.account && JSON.parse(localStorage.account))
-  );
-}
+export const getSession = memoize(
+  (): UserProfile | null =>
+    localStorage.account && JSON.parse(localStorage.account)
+);
 
 export function destroySession() {
-  account = null;
   localStorage.clear();
 
   location.replace('/');
@@ -84,7 +81,7 @@ export interface Product {
   owner: string;
   created_time: string;
   status: string;
-  catalog: string;
+  catalog_name: string;
   keyword: string;
   product_weight: number;
   package_weight: number;

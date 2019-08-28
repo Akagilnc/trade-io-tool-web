@@ -87,7 +87,7 @@ export default class ProductList extends React.PureComponent {
             </th>
             <th>{ProductField.SKU}</th>
             <th>名称</th>
-            <th>{ProductField.catalog}</th>
+            <th>{ProductField.catalog_name}</th>
             <th>{ProductField.keyword}</th>
             <th>{ProductField.bought_price}</th>
             <th>{ProductField.sell_price}</th>
@@ -110,7 +110,7 @@ export default class ProductList extends React.PureComponent {
               title_en,
               owner,
               status,
-              catalog,
+              catalog_name,
               keyword,
               bought_price,
               sell_price,
@@ -127,7 +127,7 @@ export default class ProductList extends React.PureComponent {
                   <Link to={'/products/' + id}>{SKU}</Link>
                 </td>
                 <td title={title_en}>{title_cn}</td>
-                <td>{catalog}</td>
+                <td>{catalog_name}</td>
                 <td>{keyword}</td>
                 <td>{bought_price}</td>
                 <td>{sell_price}</td>

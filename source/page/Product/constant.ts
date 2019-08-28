@@ -1,7 +1,7 @@
 export enum ProductField {
   status = '状态',
   SKU = 'SKU',
-  catalog = '分类',
+  catalog_name = '分类',
   title_en = '英文标题',
   title_cn = '中文标题',
   keyword = '关键词',

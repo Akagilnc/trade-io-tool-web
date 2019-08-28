@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { History } from 'history';
-import { Link } from 'react-router-dom';
 
 import PageBox from '../../component/PageBox';
-import { Card, Button } from 'react-bootstrap';
-import style from './detail.css';
+import { Card, Button, ListGroup } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
+import style from './detail.css';
 import { ProductField } from './constant';
 import {
   Product,
@@ -50,15 +50,27 @@ export default class ProductDetail extends React.PureComponent<
           />
           <Card.Body>
             <Card.Title title={state.title_en}>{state.title_cn}</Card.Title>
-            <ul>
-              {Object.entries(ProductField).map(([name, label]: string[]) =>
-                skip_keys.includes(name) ? null : (
-                  <li key={name}>
-                    {label}：{state[name]}
-                  </li>
-                )
-              )}
-            </ul>
+            <ListGroup variant="flush">
+              {Object.entries(ProductField).map(([name, label]: string[]) => {
+                if (skip_keys.includes(name)) return;
+
+                var content = state[name];
+
+                if (!content || !(content + '').trim()) return;
+
+                if (name.startsWith('pic_'))
+                  content = <img src={content} title={label} />;
+                else if (name.includes('link_'))
+                  content = (
+                    <a target="_blank" href={content}>
+                      {label}
+                    </a>
+                  );
+                else content = `${label}：${content}`;
+
+                return <ListGroup.Item key={name}>{content}</ListGroup.Item>;
+              })}
+            </ListGroup>
             <div className="d-flex justify-content-around">
               {hasRole(UserRole.admin, UserRole.dev, UserRole.ui) && (
                 <Link

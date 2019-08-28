@@ -117,13 +117,13 @@ export default class ProductEdit extends React.PureComponent<{
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="catalog">
-                  <Form.Label>{ProductField.catalog}</Form.Label>
+                  <Form.Label>{ProductField.catalog_name}</Form.Label>
                   <Form.Control as="select" name="catalog">
-                    {catalogs.map(({ id, name }, index) => (
+                    {catalogs.map(({ url, name }) => (
                       <option
-                        key={index}
-                        value={id}
-                        selected={name === data.catalog}
+                        key={url}
+                        value={url}
+                        selected={url === data.catalog}
                       >
                         {name}
                       </option>
