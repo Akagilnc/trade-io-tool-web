@@ -109,8 +109,8 @@ export function getProduct(id: string): Promise<Product> {
   return request(`/io_tool/products/${id}/`);
 }
 
-export function updateProduct(data: FormData) {
-  return request('/io_tool/products/', 'POST', data);
+export function updateProduct(id: string, data: FormData) {
+  return request(`/io_tool/products/${id}/`, 'PUT', data);
 }
 
 export enum ProductStatus {
@@ -120,6 +120,6 @@ export enum ProductStatus {
   reject = 'reject'
 }
 
-export function changeProductStatus(id: string, value: ProductStatus) {
+export function changeProductStatus(id: number, value: ProductStatus) {
   return request(`/io_tool/products/${id}/${value}/`, 'POST');
 }

@@ -51,6 +51,7 @@ export default class ProductEdit extends React.PureComponent<{
 
     try {
       const { id } = await updateProduct(
+        this.state.data.id,
         new FormData(event.target as HTMLFormElement)
       );
 
