@@ -51,7 +51,6 @@ export default class ProductEdit extends React.PureComponent<{
 
     try {
       const { id } = await updateProduct(
-        this.state.data.id,
         new FormData(event.target as HTMLFormElement)
       );
 
@@ -123,7 +122,7 @@ export default class ProductEdit extends React.PureComponent<{
                     {catalogs.map(({ id, name }, index) => (
                       <option
                         key={index}
-                        defaultValue={id}
+                        value={id}
                         selected={name === data.catalog}
                       >
                         {name}

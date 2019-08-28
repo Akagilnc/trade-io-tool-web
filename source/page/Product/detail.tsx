@@ -33,7 +33,7 @@ export default class ProductDetail extends React.PureComponent<
   async changeStatus(value: ProductStatus) {
     await changeProductStatus(this.state.id, value);
 
-    this.props.history.go(-1);
+    this.props.history.replace('/products');
   }
 
   render() {
