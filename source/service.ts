@@ -23,7 +23,12 @@ export async function request(
   if (response.status > 299)
     throw Object.assign(new URIError(response.statusText), { response });
 
-  return response.json();
+  switch ((response.headers.get('Content-Type') || '').split(';')[0]) {
+    case 'application/json':
+      return response.json();
+    default:
+      return response.blob();
+  }
 }
 
 export async function createSession(account: FormData) {
@@ -66,7 +71,13 @@ export function hasRole(...names: UserRole[]) {
   return false;
 }
 
-export function getCatalogs() {
+export interface Catalog {
+  id: string;
+  name: string;
+  url?: string;
+}
+
+export function getCatalogs(): Promise<Catalog[]> {
   return request('/io_tool/catalogs/');
 }
 
@@ -126,4 +137,8 @@ export enum ProductStatus {
 
 export function changeProductStatus(id: string, value: ProductStatus) {
   return request(`/io_tool/products/${id}/${value}/`, 'POST');
+}
+
+export function deleteProduct(id: string) {
+  return request(`/io_tool/products/${id}/`, 'DELETE');
 }

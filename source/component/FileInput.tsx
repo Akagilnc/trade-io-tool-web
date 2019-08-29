@@ -8,6 +8,7 @@ interface IProps {
   name: string;
   required?: boolean;
   value?: string;
+  onChange?: (value: string) => void;
 }
 
 export default class FileInput extends React.PureComponent<IProps> {
@@ -21,18 +22,24 @@ export default class FileInput extends React.PureComponent<IProps> {
   }
 
   onChange = (event: React.FormEvent) => {
-    const { files } = event.target as HTMLInputElement;
+    const { files } = event.target as HTMLInputElement,
+      { onChange } = this.props;
 
     if (files && files[0])
-      this.setState({
-        value: URL.createObjectURL(files[0]),
-        file: files[0].name
-      });
+      this.setState(
+        {
+          value: URL.createObjectURL(files[0]),
+          file: files[0].name
+        },
+        () => onChange && onChange(this.state.value)
+      );
   };
 
   render() {
     const { name, required, accept } = this.props,
       { value, file } = this.state;
+
+    const empty = !value || value.startsWith('blob:');
 
     return (
       <div
@@ -40,10 +47,11 @@ export default class FileInput extends React.PureComponent<IProps> {
         style={{ backgroundImage: `url(${value})` }}
         title={file}
       >
+        {!empty && <input type="hidden" name={name} value={value} />}
         <input
           type="file"
-          name={name}
-          required={required}
+          name={empty ? name : undefined}
+          required={!value && required}
           accept={accept}
           onChange={this.onChange}
         />

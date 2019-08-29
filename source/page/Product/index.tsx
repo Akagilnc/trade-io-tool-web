@@ -6,16 +6,27 @@ import { Link } from 'react-router-dom';
 import { Table, Pagination, Form, Col, Button } from 'react-bootstrap';
 import PageBox from '../../component/PageBox';
 
+import { ProductField } from './constant';
 import {
+  Catalog,
   getCatalogs,
   getProducts,
   Product,
   hasRole,
-  UserRole
+  UserRole,
+  deleteProduct
 } from '../../service';
-import { ProductField } from './constant';
 
-export default class ProductList extends React.PureComponent {
+interface IState {
+  loading: boolean;
+  pageSize: number;
+  totalCount: number;
+  currentPage: number;
+  list: Product[];
+  catalogs: Catalog[];
+}
+
+export default class ProductList extends React.PureComponent<any, IState> {
   state = {
     loading: false,
     pageSize: 20,
@@ -27,12 +38,22 @@ export default class ProductList extends React.PureComponent {
 
   tBody = React.createRef<HTMLTableSectionElement>();
 
-  get checkList(): HTMLInputElement[] | null {
+  get checkList() {
     const tBody = this.tBody.current;
 
     return (
-      tBody && Array.from(tBody.querySelectorAll('input[type="checkbox"]'))
+      tBody &&
+      Array.from(
+        tBody.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+      )
     );
+  }
+
+  get checkedList() {
+    const { checkList } = this,
+      { list } = this.state;
+
+    return checkList && list.filter((_, index) => checkList[index].checked);
   }
 
   async componentDidMount() {
@@ -170,21 +191,28 @@ export default class ProductList extends React.PureComponent {
     if (!input.value.trim()) this.turnTo();
   };
 
-  exportList = async (event: React.MouseEvent) => {
+  onExport = async (event: React.MouseEvent) => {
     event.preventDefault();
 
-    const { checkList } = this;
+    const { checkedList } = this;
 
-    if (!checkList) return;
+    if (checkedList)
+      saveAs(
+        new Blob([await parseAsync(checkedList, { withBOM: true })]),
+        `products-${Date.now()}.csv`
+      );
+  };
 
-    const list = this.state.list.filter((_, index) => checkList[index].checked);
+  onDelete = async (event: React.MouseEvent) => {
+    event.preventDefault();
 
-    if (!list[0]) return;
+    const { checkedList } = this;
 
-    saveAs(
-      new Blob([await parseAsync(list, { withBOM: true })]),
-      `products-${Date.now()}.csv`
-    );
+    if (!checkedList) return;
+
+    for (const { id } of checkedList) await deleteProduct(id);
+
+    return this.turnTo();
   };
 
   renderForm() {
@@ -224,8 +252,15 @@ export default class ProductList extends React.PureComponent {
           )}
           {hasRole(UserRole.admin, UserRole.sell) && (
             <Form.Group as={Col}>
-              <Button type="button" variant="success" onClick={this.exportList}>
+              <Button type="button" variant="success" onClick={this.onExport}>
                 Export
+              </Button>
+            </Form.Group>
+          )}
+          {hasRole(UserRole.admin, UserRole.dev) && (
+            <Form.Group as={Col}>
+              <Button type="button" variant="danger" onClick={this.onDelete}>
+                Delete
               </Button>
             </Form.Group>
           )}

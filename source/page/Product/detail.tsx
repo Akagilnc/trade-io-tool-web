@@ -57,10 +57,7 @@ export default class ProductDetail extends React.PureComponent<
             <Carousel className={style.slides}>
               {images.map(([name, label]: string[]) => (
                 <Carousel.Item>
-                  <div
-                    className={style['background-image']}
-                    style={{ backgroundImage: `url(${state[name]})` }}
-                  />
+                  <img src={state[name]} />
                   <Carousel.Caption>
                     <h3>{label}</h3>
                   </Carousel.Caption>
