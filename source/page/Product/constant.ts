@@ -1,5 +1,4 @@
 export enum ProductField {
-  status = '状态',
   SKU = 'SKU',
   catalog_name = '分类',
   title_en = '英文标题',
@@ -33,7 +32,10 @@ export enum ProductField {
   product_link_ebay = 'eBay 链接',
   product_link_amazon = 'Amazon 链接',
   product_link_speed_sell = '速卖链接',
-  product_remarks = '备注'
+  product_remarks = '备注',
+  owner = '创建者',
+  created_time = '创建时间',
+  status = '状态'
 }
 
 export enum ProductStatus {

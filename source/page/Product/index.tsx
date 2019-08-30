@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 import { Table, Pagination, Form, Col, Button } from 'react-bootstrap';
 import PageBox from '../../component/PageBox';
 
-import { ProductField, ProductStatus } from './constant';
+import { ProductStatus } from './constant';
+import { CommonFields, UIFields, OtherFields } from './table';
 import {
   Catalog,
   getCatalogs,
@@ -118,7 +119,11 @@ export default class ProductList extends React.PureComponent<any, IState> {
   };
 
   renderTable() {
-    const { list } = this.state;
+    const { list } = this.state,
+      columns = [
+        ...CommonFields,
+        ...(hasRole(UserRole.ui) ? UIFields : OtherFields)
+      ];
 
     return (
       <Table responsive striped bordered hover>
@@ -127,62 +132,24 @@ export default class ProductList extends React.PureComponent<any, IState> {
             <th>
               <Form.Check type="checkbox" onClick={this.checkAll} />
             </th>
-            <th>{ProductField.SKU}</th>
-            <th>名称</th>
-            <th>{ProductField.catalog_name}</th>
-            <th>{ProductField.keyword}</th>
-            <th>{ProductField.bought_price}</th>
-            <th>{ProductField.sell_price}</th>
-            <th>{ProductField.trans_price}</th>
-            <th>{ProductField.amount}</th>
-            <th>{ProductField.product_weight}</th>
-            <th>{ProductField.package_weight}</th>
-            <th>创建者</th>
-            <th>创建时间</th>
-            <th>{ProductField.status}</th>
+            {columns.map(({ head }) => (
+              <th key={head}>{head}</th>
+            ))}
           </tr>
         </thead>
         <tbody ref={this.tBody}>
-          {list.map(
-            ({
-              created_time,
-              id,
-              SKU,
-              title_cn,
-              title_en,
-              owner,
-              status,
-              catalog_name,
-              keyword,
-              bought_price,
-              sell_price,
-              trans_price,
-              amount,
-              product_weight,
-              package_weight
-            }: Product) => (
-              <tr key={created_time}>
-                <td>
-                  <Form.Check type="checkbox" />
+          {list.map((item: Product) => (
+            <tr key={item.created_time}>
+              <td>
+                <Form.Check type="checkbox" />
+              </td>
+              {columns.map(({ name, body }) => (
+                <td key={name}>
+                  {body instanceof Function ? body(item[name], item) : body}
                 </td>
-                <td>
-                  <Link to={'/products/' + id}>{SKU}</Link>
-                </td>
-                <td title={title_en}>{title_cn}</td>
-                <td>{catalog_name}</td>
-                <td>{keyword}</td>
-                <td>{bought_price}</td>
-                <td>{sell_price}</td>
-                <td>{trans_price}</td>
-                <td>{amount}</td>
-                <td>{product_weight}</td>
-                <td>{package_weight}</td>
-                <td>{owner}</td>
-                <td>{new Date(created_time).toLocaleString()}</td>
-                <td>{status}</td>
-              </tr>
-            )
-          )}
+              ))}
+            </tr>
+          ))}
         </tbody>
       </Table>
     );

@@ -20,8 +20,13 @@ export async function request(
     }
   );
 
-  if (response.status > 299)
-    throw Object.assign(new URIError(response.statusText), { response });
+  if (response.status > 299) {
+    const { detail } = await response.json();
+
+    throw Object.assign(new URIError(detail || response.statusText), {
+      response
+    });
+  }
 
   switch ((response.headers.get('Content-Type') || '').split(';')[0]) {
     case 'application/json':
@@ -104,6 +109,7 @@ export interface Product {
   sell_price: number;
   trans_price: number;
   amount: number;
+  [key: string]: any;
 }
 
 export function getProducts({

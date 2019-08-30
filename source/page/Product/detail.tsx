@@ -56,7 +56,7 @@ export default class ProductDetail extends React.PureComponent<
 
             <Carousel className={style.slides}>
               {images.map(([name, label]: string[]) => (
-                <Carousel.Item>
+                <Carousel.Item key={name}>
                   <img src={state[name]} />
                   <Carousel.Caption>
                     <h3>{label}</h3>
