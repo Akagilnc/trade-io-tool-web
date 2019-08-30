@@ -35,3 +35,11 @@ export enum ProductField {
   product_link_speed_sell = '速卖链接',
   product_remarks = '备注'
 }
+
+export enum ProductStatus {
+  commiting = '待提交',
+  committed = '已提交',
+  reviewing = '待审核',
+  accepted = '已上线',
+  rejected = '审核失败'
+}

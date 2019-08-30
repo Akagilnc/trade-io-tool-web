@@ -81,10 +81,11 @@ export function getCatalogs(): Promise<Catalog[]> {
   return request('/io_tool/catalogs/');
 }
 
-interface ItemListFilter {
-  page: number;
-  catalog: string;
-  keyword: string;
+export interface ProductFilter {
+  page?: number;
+  catalog?: string;
+  status?: string;
+  keyword?: string;
 }
 
 export interface Product {
@@ -106,13 +107,14 @@ export interface Product {
 }
 
 export function getProducts({
-  page,
-  catalog,
-  keyword
-}: ItemListFilter): Promise<{ count: number; results: Product[] }> {
+  page = 1,
+  catalog = '',
+  status = '',
+  keyword = ''
+}: ProductFilter): Promise<{ count: number; results: Product[] }> {
   return request(
     '/io_tool/products/?' +
-      new URLSearchParams({ page: page + '', catalog, search: keyword })
+      new URLSearchParams({ page: page + '', catalog, status, search: keyword })
   );
 }
 

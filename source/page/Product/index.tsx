@@ -6,14 +6,15 @@ import { Link } from 'react-router-dom';
 import { Table, Pagination, Form, Col, Button } from 'react-bootstrap';
 import PageBox from '../../component/PageBox';
 
-import { ProductField } from './constant';
+import { ProductField, ProductStatus } from './constant';
 import {
   Catalog,
   getCatalogs,
-  getProducts,
-  Product,
   hasRole,
   UserRole,
+  ProductFilter,
+  getProducts,
+  Product,
   deleteProduct
 } from '../../service';
 
@@ -21,7 +22,7 @@ interface IState {
   loading: boolean;
   pageSize: number;
   totalCount: number;
-  currentPage: number;
+  current: ProductFilter;
   list: Product[];
   catalogs: Catalog[];
 }
@@ -31,7 +32,12 @@ export default class ProductList extends React.PureComponent<any, IState> {
     loading: false,
     pageSize: 20,
     totalCount: 0,
-    currentPage: 0,
+    current: {
+      page: 1,
+      catalog: '',
+      status: '',
+      keyword: ''
+    },
     list: [],
     catalogs: []
   };
@@ -57,38 +63,47 @@ export default class ProductList extends React.PureComponent<any, IState> {
   }
 
   async componentDidMount() {
+    const { current } = this.state;
+
     this.setState({
+      current: hasRole(UserRole.admin)
+        ? { ...current, status: ProductStatus.reviewing }
+        : current,
       catalogs: [{ name: 'Catalog', id: '' }, ...(await getCatalogs())]
     });
 
-    this.turnTo();
+    this.loadData();
   }
 
-  async turnTo(page = 1, catalog = '', keyword = '') {
+  async loadData(parameter?: ProductFilter) {
+    let { current } = this.state;
+
+    current = { ...current, ...parameter };
+
     this.setState({ loading: true });
     try {
-      const { count, results } = await getProducts({ page, catalog, keyword });
+      const { count, results } = await getProducts(current);
 
-      this.setState({ totalCount: count, currentPage: page, list: results });
+      this.setState({ totalCount: count, current, list: results });
     } finally {
       this.setState({ loading: false });
     }
   }
 
   renderPagination() {
-    const { pageSize, totalCount, currentPage } = this.state;
+    const { pageSize, totalCount, current } = this.state;
 
     const pageCount = Math.ceil(totalCount / pageSize);
 
     return (
       <Pagination className="justify-content-around">
-        {Array.from(new Array(pageCount), (_, index) => (
+        {Array.from(new Array(pageCount), (_, page) => (
           <Pagination.Item
-            key={++index}
-            active={currentPage === index}
-            onClick={() => this.turnTo(index)}
+            key={++page}
+            active={current.page === page}
+            onClick={() => this.loadData({ page })}
           >
-            {index}
+            {page}
           </Pagination.Item>
         ))}
       </Pagination>
@@ -178,17 +193,18 @@ export default class ProductList extends React.PureComponent<any, IState> {
 
     const data = new FormData(event.target as HTMLFormElement);
 
-    return this.turnTo(
-      1,
-      data.get('catalog') as string,
-      data.get('keyword') as string
-    );
+    return this.loadData({
+      page: 1,
+      catalog: data.get('catalog') as string,
+      status: data.get('status') as string,
+      keyword: data.get('keyword') as string
+    });
   };
 
   onClear = (event: any) => {
     const input = event.target as HTMLInputElement;
 
-    if (!input.value.trim()) this.turnTo();
+    if (!input.value.trim()) this.loadData();
   };
 
   onExport = async (event: React.MouseEvent) => {
@@ -212,11 +228,11 @@ export default class ProductList extends React.PureComponent<any, IState> {
 
     for (const { id } of checkedList) await deleteProduct(id);
 
-    return this.turnTo();
+    return this.loadData();
   };
 
   renderForm() {
-    const { loading, catalogs } = this.state;
+    const { loading, catalogs, current } = this.state;
 
     return (
       <Form onSubmit={this.onSearch}>
@@ -224,8 +240,21 @@ export default class ProductList extends React.PureComponent<any, IState> {
           <Form.Group as={Col}>
             <Form.Control as="select" name="catalog">
               {catalogs.map(({ id, name }) => (
-                <option key={id} value={id}>
+                <option key={id} value={id} selected={id === current.catalog}>
                   {name}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+          <Form.Group as={Col}>
+            <Form.Control as="select" name="status">
+              {['', ...Object.values(ProductStatus)].map(name => (
+                <option
+                  key={name}
+                  value={name}
+                  selected={name === current.status}
+                >
+                  {name || 'Status'}
                 </option>
               ))}
             </Form.Control>
@@ -235,6 +264,7 @@ export default class ProductList extends React.PureComponent<any, IState> {
               type="search"
               name="keyword"
               placeholder="Keyword"
+              defaultValue={current.keyword}
               onChange={this.onClear}
             />
           </Form.Group>
