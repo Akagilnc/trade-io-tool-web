@@ -22,16 +22,20 @@ export default class ProductEdit extends React.PureComponent<{
       keyword: '',
       SKU: '',
       catalog: '',
-      bought_price: 0.01,
-      sell_price: 0.01,
-      product_width: 0.01,
-      product_high: 0.01,
-      product_length: 0.01,
-      product_weight: 0.01,
-      package_weight: 0.01,
-      amount: 0.01,
-      trans_price: 0.01,
+      bought_price: '0.01',
+      sell_price: '0.01',
+      product_width: '0.01',
+      product_high: '0.01',
+      product_length: '0.01',
+      product_weight: '0.01',
+      package_weight: '0.01',
+      amount: '0.01',
+      trans_price: '0.01',
+      trans_method: '',
       product_link_1688: '',
+      product_link_ebay: '',
+      product_link_amazon: '',
+      product_link_speed_sell: '',
       pic_main: '',
       pic_1st: '',
       pic_2nd: '',
@@ -40,19 +44,42 @@ export default class ProductEdit extends React.PureComponent<{
       pic_5th: '',
       pic_6th: '',
       pic_7th: '',
-      pic_8th: ''
+      pic_8th: '',
+      color: '',
+      size: '',
+      style: '',
+      material: '',
+      desc: '',
+      product_remarks: ''
     }
   };
+
+  get form() {
+    return document.querySelector<HTMLFormElement>('.card-body form');
+  }
 
   async componentDidMount() {
     this.setState({ catalogs: [{}, ...(await getCatalogs())] });
 
     const { id } = this.props.match.params;
 
-    if (id > 0)
-      this.setState({ data: await getProduct(id) }, () =>
-        window.scrollTo(0, 0)
-      );
+    if (id < 1) return;
+
+    const data = await getProduct(id);
+
+    this.setState({ data }, () => {
+      const { form } = this;
+
+      if (form)
+        for (const input of Array.from(
+          form.querySelectorAll<HTMLInputElement>(
+            'input[type="number"], textarea'
+          )
+        ))
+          input.value = data[input.name];
+
+      window.scrollTo(0, 0);
+    });
   }
 
   reset = () => this.props.history.go(-1);
@@ -107,16 +134,6 @@ export default class ProductEdit extends React.PureComponent<{
                     defaultValue={data.title_en}
                   />
                 </Form.Group>
-
-                <Form.Group as={Col} controlId="keyword">
-                  <Form.Label>{ProductField.keyword}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="keyword"
-                    required
-                    defaultValue={data.keyword}
-                  />
-                </Form.Group>
               </Form.Row>
 
               <Form.Row>
@@ -144,6 +161,16 @@ export default class ProductEdit extends React.PureComponent<{
                     ))}
                   </Form.Control>
                 </Form.Group>
+
+                <Form.Group as={Col} controlId="keyword">
+                  <Form.Label>{ProductField.keyword}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="keyword"
+                    required
+                    defaultValue={data.keyword}
+                  />
+                </Form.Group>
               </Form.Row>
 
               <Form.Row>
@@ -154,7 +181,7 @@ export default class ProductEdit extends React.PureComponent<{
                     name="bought_price"
                     required
                     min="0.01"
-                    step="0.01"
+                    step="1"
                     defaultValue={data.bought_price + ''}
                   />
                 </Form.Group>
@@ -166,7 +193,7 @@ export default class ProductEdit extends React.PureComponent<{
                     name="sell_price"
                     required
                     min="0.01"
-                    step="0.01"
+                    step="1"
                     defaultValue={data.sell_price + ''}
                   />
                 </Form.Group>
@@ -183,35 +210,13 @@ export default class ProductEdit extends React.PureComponent<{
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="color">
-                  <Form.Label>{ProductField.color}</Form.Label>
-                  <Form.Control type="text" name="color" />
-                </Form.Group>
-                <Form.Group as={Col} controlId="size">
-                  <Form.Label>{ProductField.size}</Form.Label>
-                  <Form.Control type="text" name="size" />
-                </Form.Group>
-                <Form.Group as={Col} controlId="style">
-                  <Form.Label>{ProductField.style}</Form.Label>
-                  <Form.Control type="text" name="style" />
-                </Form.Group>
-              </Form.Row>
-
-              <Form.Row>
-                <Form.Group as={Col} controlId="material">
-                  <Form.Label>{ProductField.material}</Form.Label>
-                  <Form.Control type="text" name="material" />
-                </Form.Group>
-                <Form.Group as={Col} controlId="desc">
-                  <Form.Label>{ProductField.desc}</Form.Label>
-                  <Form.Control type="text" name="desc" />
-                </Form.Group>
-              </Form.Row>
-
-              <Form.Row>
                 <Form.Group as={Col} controlId="trans_method">
                   <Form.Label>{ProductField.trans_method}</Form.Label>
-                  <Form.Control type="text" name="trans_method" />
+                  <Form.Control
+                    type="text"
+                    name="trans_method"
+                    defaultValue={data.trans_method}
+                  />
                 </Form.Group>
                 <Form.Group as={Col} controlId="trans_price">
                   <Form.Label>{ProductField.trans_price}</Form.Label>
@@ -220,8 +225,8 @@ export default class ProductEdit extends React.PureComponent<{
                     name="trans_price"
                     required
                     min="0.01"
-                    step="0.01"
-                    defaultValue={data.trans_price + ''}
+                    step="1"
+                    defaultValue={data.trans_price}
                   />
                 </Form.Group>
               </Form.Row>
@@ -234,8 +239,8 @@ export default class ProductEdit extends React.PureComponent<{
                     name="product_weight"
                     required
                     min="0.01"
-                    step="0.01"
-                    value={data.product_weight + ''}
+                    step="1"
+                    defaultValue={data.product_weight}
                   />
                 </Form.Group>
 
@@ -246,8 +251,8 @@ export default class ProductEdit extends React.PureComponent<{
                     name="package_weight"
                     required
                     min="0.01"
-                    step="0.01"
-                    defaultValue={data.package_weight + ''}
+                    step="1"
+                    defaultValue={data.package_weight}
                   />
                 </Form.Group>
               </Form.Row>
@@ -259,8 +264,8 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="product_length"
                     min="0.01"
-                    step="0.01"
-                    defaultValue={data.product_length + ''}
+                    step="1"
+                    defaultValue={data.product_length}
                   />
                 </Form.Group>
 
@@ -270,8 +275,8 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="product_width"
                     min="0.01"
-                    step="0.01"
-                    defaultValue={data.product_width + ''}
+                    step="1"
+                    defaultValue={data.product_width}
                   />
                 </Form.Group>
 
@@ -281,8 +286,54 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="product_high"
                     min="0.01"
-                    step="0.01"
-                    defaultValue={data.product_high + ''}
+                    step="1"
+                    defaultValue={data.product_high}
+                  />
+                </Form.Group>
+              </Form.Row>
+
+              <Form.Row>
+                <Form.Group as={Col} controlId="color">
+                  <Form.Label>{ProductField.color}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="color"
+                    defaultValue={data.color}
+                  />
+                </Form.Group>
+                <Form.Group as={Col} controlId="size">
+                  <Form.Label>{ProductField.size}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="size"
+                    defaultValue={data.size}
+                  />
+                </Form.Group>
+                <Form.Group as={Col} controlId="material">
+                  <Form.Label>{ProductField.material}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="material"
+                    defaultValue={data.material}
+                  />
+                </Form.Group>
+                <Form.Group as={Col} controlId="style">
+                  <Form.Label>{ProductField.style}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="style"
+                    defaultValue={data.style}
+                  />
+                </Form.Group>
+              </Form.Row>
+
+              <Form.Row>
+                <Form.Group as={Col} controlId="desc">
+                  <Form.Label>{ProductField.desc}</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    name="desc"
+                    defaultValue={data.desc}
                   />
                 </Form.Group>
               </Form.Row>
@@ -380,26 +431,42 @@ export default class ProductEdit extends React.PureComponent<{
                 </Form.Group>
                 <Form.Group as={Col} controlId="product_link_ebay">
                   <Form.Label>{ProductField.product_link_ebay}</Form.Label>
-                  <Form.Control type="url" name="product_link_ebay" />
+                  <Form.Control
+                    type="url"
+                    name="product_link_ebay"
+                    defaultValue={data.product_link_ebay}
+                  />
                 </Form.Group>
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} controlId="product_link_amazon">
                   <Form.Label>{ProductField.product_link_amazon}</Form.Label>
-                  <Form.Control type="url" name="product_link_amazon" />
+                  <Form.Control
+                    type="url"
+                    name="product_link_amazon"
+                    defaultValue={data.product_link_amazon}
+                  />
                 </Form.Group>
                 <Form.Group as={Col} controlId="product_link_speed_sell">
                   <Form.Label>
                     {ProductField.product_link_speed_sell}
                   </Form.Label>
-                  <Form.Control type="url" name="product_link_speed_sell" />
+                  <Form.Control
+                    type="url"
+                    name="product_link_speed_sell"
+                    defaultValue={data.product_link_speed_sell}
+                  />
                 </Form.Group>
               </Form.Row>
 
               <Form.Row>
                 <Form.Group as={Col} controlId="product_remarks">
                   <Form.Label>{ProductField.product_remarks}</Form.Label>
-                  <Form.Control type="text" name="product_remarks" />
+                  <Form.Control
+                    type="text"
+                    name="product_remarks"
+                    defaultValue={data.product_remarks}
+                  />
                 </Form.Group>
               </Form.Row>
 

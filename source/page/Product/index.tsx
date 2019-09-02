@@ -145,7 +145,11 @@ export default class ProductList extends React.PureComponent<any, IState> {
               </td>
               {columns.map(({ name, body }) => (
                 <td key={name}>
-                  {body instanceof Function ? body(item[name], item) : body}
+                  {item[name] != null
+                    ? body instanceof Function
+                      ? body(item[name], item)
+                      : body
+                    : ''}
                 </td>
               ))}
             </tr>
