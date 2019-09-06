@@ -89,9 +89,13 @@ export default class ProductEdit extends React.PureComponent<{
 
     this.setState({ loading: true });
     try {
-      const { id } = await updateProduct(
-        new FormData(event.target as HTMLFormElement)
-      );
+      const data = new FormData(event.target as HTMLFormElement);
+      // @ts-ignore
+      for (const [key, value] of Array.from(data))
+        if (key.startsWith('pic_') && !(value instanceof Blob && value.size))
+          data.delete(key);
+
+      const { id } = await updateProduct(data);
 
       this.props.history.replace('/products/' + id);
     } catch {
@@ -181,7 +185,7 @@ export default class ProductEdit extends React.PureComponent<{
                     name="bought_price"
                     required
                     min="0.01"
-                    step="1"
+                    step="0.01"
                     defaultValue={data.bought_price + ''}
                   />
                 </Form.Group>
@@ -193,7 +197,7 @@ export default class ProductEdit extends React.PureComponent<{
                     name="sell_price"
                     required
                     min="0.01"
-                    step="1"
+                    step="0.01"
                     defaultValue={data.sell_price + ''}
                   />
                 </Form.Group>
@@ -225,7 +229,7 @@ export default class ProductEdit extends React.PureComponent<{
                     name="trans_price"
                     required
                     min="0.01"
-                    step="1"
+                    step="0.01"
                     defaultValue={data.trans_price}
                   />
                 </Form.Group>
@@ -239,7 +243,7 @@ export default class ProductEdit extends React.PureComponent<{
                     name="product_weight"
                     required
                     min="0.01"
-                    step="1"
+                    step="0.01"
                     defaultValue={data.product_weight}
                   />
                 </Form.Group>
@@ -251,7 +255,7 @@ export default class ProductEdit extends React.PureComponent<{
                     name="package_weight"
                     required
                     min="0.01"
-                    step="1"
+                    step="0.01"
                     defaultValue={data.package_weight}
                   />
                 </Form.Group>
@@ -264,7 +268,7 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="product_length"
                     min="0.01"
-                    step="1"
+                    step="0.01"
                     defaultValue={data.product_length}
                   />
                 </Form.Group>
@@ -275,7 +279,7 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="product_width"
                     min="0.01"
-                    step="1"
+                    step="0.01"
                     defaultValue={data.product_width}
                   />
                 </Form.Group>
@@ -286,7 +290,7 @@ export default class ProductEdit extends React.PureComponent<{
                     type="number"
                     name="product_high"
                     min="0.01"
-                    step="1"
+                    step="0.01"
                     defaultValue={data.product_high}
                   />
                 </Form.Group>

@@ -132,7 +132,7 @@ export function updateProduct(data: FormData) {
   const id = Number(data.get('id'));
 
   return id > 0
-    ? request(`/io_tool/products/${id}/`, 'PUT', data)
+    ? request(`/io_tool/products/${id}/`, 'PATCH', data)
     : request(`/io_tool/products/`, 'POST', data);
 }
 
