@@ -225,7 +225,7 @@ export default class ProductList extends React.PureComponent<any, IState> {
                   value={name}
                   selected={name === current.status}
                 >
-                  {name || 'Status'}
+                  {name || '全部'}
                 </option>
               ))}
             </Form.Control>
