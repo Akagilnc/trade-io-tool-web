@@ -89,13 +89,9 @@ export default class ProductEdit extends React.PureComponent<{
 
     this.setState({ loading: true });
     try {
-      const data = new FormData(event.target as HTMLFormElement);
-      // @ts-ignore
-      for (const [key, value] of Array.from(data))
-        if (key.startsWith('pic_') && !(value instanceof Blob && value.size))
-          data.delete(key);
-
-      const { id } = await updateProduct(data);
+      const { id } = await updateProduct(
+        new FormData(event.target as HTMLFormElement)
+      );
 
       this.props.history.replace('/products/' + id);
     } catch {

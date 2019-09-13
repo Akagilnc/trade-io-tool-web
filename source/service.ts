@@ -131,9 +131,17 @@ export function getProduct(id: string): Promise<Product> {
 export function updateProduct(data: FormData) {
   const id = Number(data.get('id'));
 
-  return id > 0
-    ? request(`/io_tool/products/${id}/`, 'PATCH', data)
-    : request(`/io_tool/products/`, 'POST', data);
+  if (id < 1) {
+    data.delete('id');
+
+    return request(`/io_tool/products/`, 'POST', data);
+  }
+  // @ts-ignore
+  for (const [key, value] of Array.from(data))
+    if (key.startsWith('pic_') && !(value instanceof Blob && value.size))
+      data.delete(key);
+
+  return request(`/io_tool/products/${id}/`, 'PATCH', data);
 }
 
 export enum ProductStatus {

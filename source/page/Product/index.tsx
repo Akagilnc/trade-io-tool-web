@@ -148,7 +148,9 @@ export default class ProductList extends React.PureComponent<any, IState> {
                   {item[name] != null
                     ? body instanceof Function
                       ? body(item[name], item)
-                      : body
+                      : body != null
+                      ? body
+                      : item[name]
                     : ''}
                 </td>
               ))}
@@ -183,7 +185,7 @@ export default class ProductList extends React.PureComponent<any, IState> {
 
     const { checkedList } = this;
 
-    if (checkedList)
+    if (checkedList && checkedList[0])
       saveAs(
         new Blob([await parseAsync(checkedList, { withBOM: true })]),
         `products-${Date.now()}.csv`
