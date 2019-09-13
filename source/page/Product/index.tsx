@@ -21,6 +21,7 @@ import {
 
 interface IState {
   loading: boolean;
+  exportable: boolean;
   pageSize: number;
   totalCount: number;
   current: ProductFilter;
@@ -31,6 +32,7 @@ interface IState {
 export default class ProductList extends React.PureComponent<any, IState> {
   state = {
     loading: false,
+    exportable: false,
     pageSize: 20,
     totalCount: 0,
     current: {
@@ -118,6 +120,12 @@ export default class ProductList extends React.PureComponent<any, IState> {
     if (checkList) for (const input of checkList) input.checked = checked;
   };
 
+  onCheck = () => {
+    const { checkedList } = this;
+
+    this.setState({ exportable: Boolean(checkedList && checkedList[0]) });
+  };
+
   renderTable() {
     const { list } = this.state,
       columns = [
@@ -126,7 +134,7 @@ export default class ProductList extends React.PureComponent<any, IState> {
       ];
 
     return (
-      <Table responsive striped bordered hover>
+      <Table responsive striped bordered hover onInput={this.onCheck}>
         <thead>
           <tr className="text-nowrap">
             <th>
@@ -205,7 +213,7 @@ export default class ProductList extends React.PureComponent<any, IState> {
   };
 
   renderForm() {
-    const { loading, catalogs, current } = this.state;
+    const { loading, exportable, catalogs, current } = this.state;
 
     return (
       <Form onSubmit={this.onSearch}>
@@ -255,7 +263,12 @@ export default class ProductList extends React.PureComponent<any, IState> {
           )}
           {hasRole(UserRole.admin, UserRole.sell) && (
             <Form.Group as={Col}>
-              <Button type="button" variant="success" onClick={this.onExport}>
+              <Button
+                type="button"
+                variant="success"
+                disabled={!exportable}
+                onClick={this.onExport}
+              >
                 Export
               </Button>
             </Form.Group>
