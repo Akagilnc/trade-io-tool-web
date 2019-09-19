@@ -39,9 +39,8 @@ export enum ProductField {
 }
 
 export enum ProductStatus {
-  commiting = '待提交',
-  committed = '已提交',
   reviewing = '待审核',
-  accepted = '已上线',
-  rejected = '审核失败'
+  accepted = '审核通过',
+  rejected = '审核失败',
+  committed = '已上线'
 }

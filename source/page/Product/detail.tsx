@@ -100,7 +100,7 @@ export default class ProductDetail extends React.PureComponent<
                   Edit
                 </Link>
               )}
-              {hasRole(UserRole.dev) && (
+              {hasRole(UserRole.ui) && (
                 <Button
                   type="button"
                   onClick={() => this.changeStatus(ProductStatus.commit)}
@@ -108,7 +108,7 @@ export default class ProductDetail extends React.PureComponent<
                   Commit
                 </Button>
               )}
-              {hasRole(UserRole.ui) && (
+              {hasRole(UserRole.dev) && (
                 <Button
                   type="button"
                   onClick={() => this.changeStatus(ProductStatus.review)}
