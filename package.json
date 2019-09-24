@@ -7,8 +7,8 @@
     "browser-unhandled-rejection": "^1.0.2",
     "classnames": "^2.2.6",
     "file-saver": "^2.0.2",
-    "history": "^4.9.0",
-    "json2csv": "^4.5.2",
+    "history": "^4.10.1",
+    "json2csv": "^4.5.3",
     "lodash.memoize": "^4.1.2",
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.12",
@@ -26,11 +26,11 @@
     "autoprefixer": "^9.6.1",
     "husky": "^3.0.5",
     "less": "^3.10.3",
-    "lint-staged": "^9.2.5",
+    "lint-staged": "^9.3.0",
     "parcel-bundler": "^1.12.3",
     "postcss-modules": "^1.4.1",
     "prettier": "^1.18.2",
-    "typescript": "^3.6.2"
+    "typescript": "^3.6.3"
   },
   "scripts": {
     "start": "rm -rf dist/  &&  parcel source/index.html",

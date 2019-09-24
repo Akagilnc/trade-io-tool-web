@@ -21,11 +21,19 @@ export async function request(
   );
 
   if (response.status > 299) {
-    const { detail } = await response.json();
+    let error = await response.json();
 
-    throw Object.assign(new URIError(detail || response.statusText), {
-      response
-    });
+    if (!error.detail)
+      error = Object.entries(error)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\n');
+
+    throw Object.assign(
+      new URIError(error.detail || error || response.statusText),
+      {
+        response
+      }
+    );
   }
 
   switch ((response.headers.get('Content-Type') || '').split(';')[0]) {
@@ -129,19 +137,20 @@ export function getProduct(id: string): Promise<Product> {
 }
 
 export function updateProduct(data: FormData) {
-  const id = Number(data.get('id'));
+  const id = Number(data.get('id')),
+    SKU = data.get('SKU');
 
-  if (id < 1) {
-    data.delete('id');
-
-    return request(`/io_tool/products/`, 'POST', data);
-  }
   // @ts-ignore
-  for (const [key, value] of Array.from(data))
-    if (key.startsWith('pic_') && !(value instanceof Blob && value.size))
-      data.delete(key);
+  for (const [key, value] of data)
+    if (value instanceof File)
+      if (!value.size) data.delete(key);
+      else data.set(key, new File([value], `${SKU}-${value.name}`));
 
-  return request(`/io_tool/products/${id}/`, 'PATCH', data);
+  if (id > 0) return request(`/io_tool/products/${id}/`, 'PATCH', data);
+
+  data.delete('id');
+
+  return request(`/io_tool/products/`, 'POST', data);
 }
 
 export enum ProductStatus {

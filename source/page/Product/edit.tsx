@@ -94,8 +94,6 @@ export default class ProductEdit extends React.PureComponent<{
       );
 
       this.props.history.replace('/products/' + id);
-    } catch {
-      window.alert('Data incorrect!');
     } finally {
       this.setState({ loading: false });
     }
