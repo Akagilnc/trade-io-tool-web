@@ -45,5 +45,5 @@ export enum ProductStatusName {
   rejected = '审核失败',
   final_reviewing = '待终审',
   committed = '已上线',
-  all_reviewing = '待提交,待终审'
+  all_reviewing = '待审核,待终审'
 }
