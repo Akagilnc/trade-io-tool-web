@@ -39,6 +39,8 @@ export default class ProductList extends React.PureComponent<any, IState> {
       page: 1,
       catalog: '',
       status: '',
+      price_min: '',
+      price_max: '',
       keyword: ''
     },
     list: [],
@@ -178,6 +180,8 @@ export default class ProductList extends React.PureComponent<any, IState> {
       page: 1,
       catalog: data.get('catalog') as string,
       status: data.get('status') as string,
+      price_min: data.get('price_min') as string,
+      price_max: data.get('price_max') as string,
       keyword: data.get('keyword') as string
     });
   };
@@ -239,6 +243,26 @@ export default class ProductList extends React.PureComponent<any, IState> {
                 </option>
               ))}
             </Form.Control>
+          </Form.Group>
+          <Form.Group as={Col}>
+            <Form.Control
+              type="number"
+              name="price_min"
+              min="0"
+              step="0.01"
+              defaultValue={current.price_min}
+              placeholder="Price min"
+            />
+          </Form.Group>
+          <Form.Group as={Col}>
+            <Form.Control
+              type="number"
+              name="price_max"
+              min="0"
+              step="0.01"
+              defaultValue={current.price_max}
+              placeholder="Price max"
+            />
           </Form.Group>
           <Form.Group as={Col}>
             <Form.Control

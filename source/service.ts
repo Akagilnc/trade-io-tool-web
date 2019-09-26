@@ -98,6 +98,8 @@ export interface ProductFilter {
   page?: number;
   catalog?: string;
   status?: string;
+  price_min?: string;
+  price_max?: string;
   keyword?: string;
 }
 
@@ -124,11 +126,20 @@ export function getProducts({
   page = 1,
   catalog = '',
   status = '',
+  price_min = '',
+  price_max = '',
   keyword = ''
 }: ProductFilter): Promise<{ count: number; results: Product[] }> {
   return request(
     '/io_tool/products/?' +
-      new URLSearchParams({ page: page + '', catalog, status, search: keyword })
+      new URLSearchParams({
+        page: page + '',
+        catalog,
+        status,
+        price_min,
+        price_max,
+        search: keyword
+      })
   );
 }
 
