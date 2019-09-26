@@ -38,9 +38,12 @@ export enum ProductField {
   status = '状态'
 }
 
-export enum ProductStatus {
+export enum ProductStatusName {
+  committing = '待提交',
   reviewing = '待审核',
   accepted = '审核通过',
   rejected = '审核失败',
-  committed = '已上线'
+  final_reviewing = '待终审',
+  committed = '已上线',
+  all_reviewing = '待提交,待终审'
 }

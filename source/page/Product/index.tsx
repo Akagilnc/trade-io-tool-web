@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Table, Pagination, Form, Col, Button } from 'react-bootstrap';
 import PageBox from '../../component/PageBox';
 
-import { ProductStatus } from './constant';
+import { ProductStatusName } from './constant';
 import { CommonFields, UIFields, OtherFields } from './table';
 import {
   Catalog,
@@ -70,7 +70,7 @@ export default class ProductList extends React.PureComponent<any, IState> {
 
     this.setState({
       current: hasRole(UserRole.admin)
-        ? { ...current, status: ProductStatus.reviewing }
+        ? { ...current, status: ProductStatusName.all_reviewing }
         : current,
       catalogs: [{ name: 'Catalog', id: '' }, ...(await getCatalogs())]
     });
@@ -229,7 +229,7 @@ export default class ProductList extends React.PureComponent<any, IState> {
           </Form.Group>
           <Form.Group as={Col}>
             <Form.Control as="select" name="status">
-              {['', ...Object.values(ProductStatus)].map(name => (
+              {['', ...Object.values(ProductStatusName)].map(name => (
                 <option
                   key={name}
                   value={name}

@@ -17,11 +17,15 @@ export default class ProductEdit extends React.PureComponent<{
     catalogs: [],
     data: {
       id: 0,
+      created_time: '',
+      owner: '',
+      status: '',
       title_cn: '',
       title_en: '',
       keyword: '',
       SKU: '',
       catalog: '',
+      catalog_name: '',
       bought_price: '0.01',
       sell_price: '0.01',
       product_width: '0.01',
@@ -99,6 +103,40 @@ export default class ProductEdit extends React.PureComponent<{
     }
   };
 
+  renderTextField = (key: keyof typeof ProductField, props?: any) => (
+    <Form.Group as={Col} controlId={key}>
+      <Form.Label>{ProductField[key]}</Form.Label>
+      <Form.Control
+        type="text"
+        name={key}
+        maxLength={500}
+        defaultValue={this.state.data[key]}
+        {...props}
+      />
+    </Form.Group>
+  );
+
+  renderNumberField = (key: keyof typeof ProductField, props?: any) => (
+    <Form.Group as={Col} controlId={key}>
+      <Form.Label>{ProductField[key]}</Form.Label>
+      <Form.Control
+        type="number"
+        name={key}
+        min="0.01"
+        step="0.01"
+        defaultValue={this.state.data[key] + ''}
+        {...props}
+      />
+    </Form.Group>
+  );
+
+  renderImageField = (key: keyof typeof ProductField, props?: any) => (
+    <Form.Group as={Col} controlId={key}>
+      <Form.Label>{ProductField[key]}</Form.Label>
+      <FileInput accept="image/*" name={key} value={this.state.data[key]} />
+    </Form.Group>
+  );
+
   render() {
     const { loading, catalogs, data } = this.state;
 
@@ -113,37 +151,16 @@ export default class ProductEdit extends React.PureComponent<{
                 <input type="hidden" name="id" value={data.id} />
               )}
               <Form.Row>
-                <Form.Group as={Col} controlId="title_cn">
-                  <Form.Label>{ProductField.title_cn}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="title_cn"
-                    required
-                    defaultValue={data.title_cn}
-                  />
-                </Form.Group>
+                {this.renderTextField('title_cn', { required: true })}
 
-                <Form.Group as={Col} controlId="title_en">
-                  <Form.Label>{ProductField.title_en}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="title_en"
-                    required
-                    defaultValue={data.title_en}
-                  />
-                </Form.Group>
+                {this.renderTextField('title_en', { required: true })}
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="SKU">
-                  <Form.Label>{ProductField.SKU}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="SKU"
-                    required
-                    defaultValue={data.SKU}
-                  />
-                </Form.Group>
+                {this.renderTextField('SKU', {
+                  required: true,
+                  maxLength: 100
+                })}
 
                 <Form.Group as={Col} controlId="catalog">
                   <Form.Label>{ProductField.catalog_name}</Form.Label>
@@ -160,169 +177,50 @@ export default class ProductEdit extends React.PureComponent<{
                   </Form.Control>
                 </Form.Group>
 
-                <Form.Group as={Col} controlId="keyword">
-                  <Form.Label>{ProductField.keyword}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="keyword"
-                    required
-                    defaultValue={data.keyword}
-                  />
-                </Form.Group>
+                {this.renderTextField('keyword', { required: true })}
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="bought_price">
-                  <Form.Label>{ProductField.bought_price}</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="bought_price"
-                    required
-                    min="0.01"
-                    step="0.01"
-                    defaultValue={data.bought_price + ''}
-                  />
-                </Form.Group>
+                {this.renderNumberField('bought_price', { required: true })}
 
-                <Form.Group as={Col} controlId="sell_price">
-                  <Form.Label>{ProductField.sell_price}</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="sell_price"
-                    required
-                    min="0.01"
-                    step="0.01"
-                    defaultValue={data.sell_price + ''}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="amount">
-                  <Form.Label>{ProductField.amount}</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="amount"
-                    required
-                    min="0"
-                    defaultValue="0"
-                  />
-                </Form.Group>
+                {this.renderNumberField('sell_price', { required: true })}
+
+                {this.renderNumberField('amount', {
+                  required: true,
+                  min: 0,
+                  step: 1,
+                  defaultValue: 0
+                })}
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="trans_method">
-                  <Form.Label>{ProductField.trans_method}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="trans_method"
-                    defaultValue={data.trans_method}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="trans_price">
-                  <Form.Label>{ProductField.trans_price}</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="trans_price"
-                    required
-                    min="0.01"
-                    step="0.01"
-                    defaultValue={data.trans_price}
-                  />
-                </Form.Group>
+                {this.renderTextField('trans_method', { maxLength: 200 })}
+
+                {this.renderNumberField('trans_price', { required: true })}
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="product_weight">
-                  <Form.Label>{ProductField.product_weight}</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="product_weight"
-                    required
-                    min="0.01"
-                    step="0.01"
-                    defaultValue={data.product_weight}
-                  />
-                </Form.Group>
+                {this.renderNumberField('product_weight', { required: true })}
 
-                <Form.Group as={Col} controlId="package_weight">
-                  <Form.Label>{ProductField.package_weight}</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="package_weight"
-                    required
-                    min="0.01"
-                    step="0.01"
-                    defaultValue={data.package_weight}
-                  />
-                </Form.Group>
+                {this.renderNumberField('package_weight', { required: true })}
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="product_length">
-                  <Form.Label>{ProductField.product_length}</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="product_length"
-                    min="0.01"
-                    step="0.01"
-                    defaultValue={data.product_length}
-                  />
-                </Form.Group>
+                {this.renderNumberField('product_length')}
 
-                <Form.Group as={Col} controlId="product_width">
-                  <Form.Label>{ProductField.product_width}</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="product_width"
-                    min="0.01"
-                    step="0.01"
-                    defaultValue={data.product_width}
-                  />
-                </Form.Group>
+                {this.renderNumberField('product_width')}
 
-                <Form.Group as={Col} controlId="product_high">
-                  <Form.Label>{ProductField.product_high}</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="product_high"
-                    min="0.01"
-                    step="0.01"
-                    defaultValue={data.product_high}
-                  />
-                </Form.Group>
+                {this.renderNumberField('product_high')}
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="color">
-                  <Form.Label>{ProductField.color}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="color"
-                    defaultValue={data.color}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="size">
-                  <Form.Label>{ProductField.size}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="size"
-                    defaultValue={data.size}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="material">
-                  <Form.Label>{ProductField.material}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="material"
-                    defaultValue={data.material}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="style">
-                  <Form.Label>{ProductField.style}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="style"
-                    defaultValue={data.style}
-                  />
-                </Form.Group>
+                {this.renderTextField('color', { maxLength: 200 })}
+
+                {this.renderTextField('size', { maxLength: 100 })}
+
+                {this.renderTextField('material', { maxLength: 100 })}
+
+                {this.renderTextField('style', { maxLength: 200 })}
               </Form.Row>
 
               <Form.Row>
@@ -337,135 +235,53 @@ export default class ProductEdit extends React.PureComponent<{
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="pic_main">
-                  <Form.Label>{ProductField.pic_main}</Form.Label>
-                  <FileInput
-                    accept="image/*"
-                    name="pic_main"
-                    required
-                    value={data.pic_main}
-                  />
-                </Form.Group>
+                {this.renderImageField('pic_main', { required: true })}
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="pic_1st">
-                  <Form.Label>{ProductField.pic_1st}</Form.Label>
-                  <FileInput
-                    accept="image/*"
-                    name="pic_1st"
-                    value={data.pic_1st}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="pic_2nd">
-                  <Form.Label>{ProductField.pic_2nd}</Form.Label>
-                  <FileInput
-                    accept="image/*"
-                    name="pic_2nd"
-                    value={data.pic_2nd}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="pic_3rd">
-                  <Form.Label>{ProductField.pic_3rd}</Form.Label>
-                  <FileInput
-                    accept="image/*"
-                    name="pic_3rd"
-                    value={data.pic_3rd}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="pic_4th">
-                  <Form.Label>{ProductField.pic_4th}</Form.Label>
-                  <FileInput
-                    accept="image/*"
-                    name="pic_4th"
-                    value={data.pic_4th}
-                  />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col} controlId="pic_5th">
-                  <Form.Label>{ProductField.pic_5th}</Form.Label>
-                  <FileInput
-                    accept="image/*"
-                    name="pic_5th"
-                    value={data.pic_5th}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="pic_6th">
-                  <Form.Label>{ProductField.pic_6th}</Form.Label>
-                  <FileInput
-                    accept="image/*"
-                    name="pic_6th"
-                    value={data.pic_6th}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="pic_7th">
-                  <Form.Label>{ProductField.pic_7th}</Form.Label>
-                  <FileInput
-                    accept="image/*"
-                    name="pic_7th"
-                    value={data.pic_7th}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="pic_8th">
-                  <Form.Label>{ProductField.pic_8th}</Form.Label>
-                  <FileInput
-                    accept="image/*"
-                    name="pic_8th"
-                    value={data.pic_8th}
-                  />
-                </Form.Group>
+                {this.renderImageField('pic_1st')}
+
+                {this.renderImageField('pic_2nd')}
+
+                {this.renderImageField('pic_3rd')}
+
+                {this.renderImageField('pic_4th')}
+
+                {this.renderImageField('pic_5th')}
+
+                {this.renderImageField('pic_6th')}
+
+                {this.renderImageField('pic_7th')}
+
+                {this.renderImageField('pic_8th')}
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="product_link_1688">
-                  <Form.Label>{ProductField.product_link_1688}</Form.Label>
-                  <Form.Control
-                    type="url"
-                    name="product_link_1688"
-                    required
-                    defaultValue={data.product_link_1688}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="product_link_ebay">
-                  <Form.Label>{ProductField.product_link_ebay}</Form.Label>
-                  <Form.Control
-                    type="url"
-                    name="product_link_ebay"
-                    defaultValue={data.product_link_ebay}
-                  />
-                </Form.Group>
+                {this.renderTextField('product_link_1688', {
+                  type: 'url',
+                  maxLength: 1400,
+                  required: true
+                })}
+
+                {this.renderTextField('product_link_ebay', {
+                  type: 'url',
+                  maxLength: 1400
+                })}
               </Form.Row>
               <Form.Row>
-                <Form.Group as={Col} controlId="product_link_amazon">
-                  <Form.Label>{ProductField.product_link_amazon}</Form.Label>
-                  <Form.Control
-                    type="url"
-                    name="product_link_amazon"
-                    defaultValue={data.product_link_amazon}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="product_link_speed_sell">
-                  <Form.Label>
-                    {ProductField.product_link_speed_sell}
-                  </Form.Label>
-                  <Form.Control
-                    type="url"
-                    name="product_link_speed_sell"
-                    defaultValue={data.product_link_speed_sell}
-                  />
-                </Form.Group>
+                {this.renderTextField('product_link_amazon', {
+                  type: 'url',
+                  maxLength: 1400
+                })}
+
+                {this.renderTextField('product_link_speed_sell', {
+                  type: 'url',
+                  maxLength: 1400
+                })}
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="product_remarks">
-                  <Form.Label>{ProductField.product_remarks}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="product_remarks"
-                    defaultValue={data.product_remarks}
-                  />
-                </Form.Group>
+                {this.renderTextField('product_remarks', { maxLength: 3000 })}
               </Form.Row>
 
               <Form.Row>

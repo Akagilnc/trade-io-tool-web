@@ -2,11 +2,11 @@ import * as React from 'react';
 import { History } from 'history';
 
 import PageBox from '../../component/PageBox';
-import { Card, Button, Carousel, ListGroup, Table } from 'react-bootstrap';
+import { Card, Button, Carousel, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import style from './detail.less';
-import { ProductField } from './constant';
+import { ProductField, ProductStatusName } from './constant';
 import {
   Product,
   getProduct,
@@ -38,15 +38,21 @@ export default class ProductDetail extends React.PureComponent<
 
   render() {
     const state: any = this.state || {},
-      [images, texts] = Object.entries(ProductField).reduce(
+      [images, URLs, texts] = Object.entries(ProductField).reduce(
         (list: string[][][], [name, label]: string[]) => {
           if (name.startsWith('pic_')) list[0].push([name, label]);
-          else if (!name.startsWith('title_')) list[1].push([name, label]);
+          else if (name.includes('link_')) list[1].push([name, label]);
+          else if (!/title|remark/.test(name)) list[2].push([name, label]);
 
           return list;
         },
-        [[], []]
+        [[], [], []]
       );
+
+    if (hasRole(UserRole.ui)) texts.splice(0, Infinity, ...URLs);
+    else texts.push(...URLs);
+
+    texts.push(['product_remarks', ProductField.product_remarks]);
 
     return (
       <PageBox>
@@ -70,23 +76,20 @@ export default class ProductDetail extends React.PureComponent<
                 {texts.map(([name, label]: string[]) => {
                   const content = state[name];
 
-                  return (
-                    content &&
-                    (content + '').trim() && (
-                      <tr key={name}>
-                        <th className="text-nowrap">{label}</th>
-                        <td>
-                          {name.includes('link_') ? (
-                            <a target="_blank" href={content}>
-                              {content}
-                            </a>
-                          ) : (
-                            content
-                          )}
-                        </td>
-                      </tr>
-                    )
-                  );
+                  return content && (content + '').trim() ? (
+                    <tr key={name}>
+                      <th className="text-nowrap">{label}</th>
+                      <td>
+                        {name.includes('link_') ? (
+                          <a target="_blank" href={content}>
+                            {content}
+                          </a>
+                        ) : (
+                          content
+                        )}
+                      </td>
+                    </tr>
+                  ) : null;
                 })}
               </tbody>
             </Table>
@@ -100,15 +103,7 @@ export default class ProductDetail extends React.PureComponent<
                   Edit
                 </Link>
               )}
-              {hasRole(UserRole.ui) && (
-                <Button
-                  type="button"
-                  onClick={() => this.changeStatus(ProductStatus.commit)}
-                >
-                  Commit
-                </Button>
-              )}
-              {hasRole(UserRole.dev) && (
+              {hasRole(UserRole.dev, UserRole.ui) && (
                 <Button
                   type="button"
                   onClick={() => this.changeStatus(ProductStatus.review)}
@@ -123,7 +118,9 @@ export default class ProductDetail extends React.PureComponent<
                     variant="success"
                     onClick={() => this.changeStatus(ProductStatus.accept)}
                   >
-                    Accept
+                    {state.status === ProductStatusName.final_reviewing
+                      ? 'Publish'
+                      : 'Accept'}
                   </Button>
                   <Button
                     type="button"

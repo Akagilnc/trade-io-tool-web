@@ -154,7 +154,6 @@ export function updateProduct(data: FormData) {
 }
 
 export enum ProductStatus {
-  commit = 'commit',
   review = 'review',
   accept = 'accept',
   reject = 'reject'
