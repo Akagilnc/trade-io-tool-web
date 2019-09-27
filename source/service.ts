@@ -153,9 +153,10 @@ export function updateProduct(data: FormData) {
 
   // @ts-ignore
   for (const [key, value] of data)
-    if (value instanceof File)
+    if (value instanceof File) {
       if (!value.size) data.delete(key);
       else data.set(key, new File([value], `${SKU}-${value.name}`));
+    } else if (key.startsWith('pic_')) data.delete(key);
 
   if (id > 0) return request(`/io_tool/products/${id}/`, 'PATCH', data);
 

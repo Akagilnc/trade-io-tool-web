@@ -101,7 +101,7 @@ export default class ProductList extends React.PureComponent<any, IState> {
     const pageCount = Math.ceil(totalCount / pageSize);
 
     return (
-      <Pagination className="justify-content-around">
+      <Pagination className="justify-content-center">
         {Array.from(new Array(pageCount), (_, page) => (
           <Pagination.Item
             key={++page}
