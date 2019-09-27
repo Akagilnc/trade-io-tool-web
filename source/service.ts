@@ -152,7 +152,7 @@ export function updateProduct(data: FormData) {
     SKU = data.get('SKU');
 
   // @ts-ignore
-  for (const [key, value] of data)
+  for (const [key, value] of Array.from(data))
     if (value instanceof File) {
       if (!value.size) data.delete(key);
       else data.set(key, new File([value], `${SKU}-${value.name}`));
