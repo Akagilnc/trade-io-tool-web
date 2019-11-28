@@ -15,15 +15,18 @@ import { destroySession } from './service';
 
 auto();
 
-window.addEventListener(
-  'unhandledrejection',
-  ({ reason: { message, response } }) => {
-    const { status } = response || '';
+window.addEventListener('unhandledrejection', event => {
+  const {
+    reason: { message, status }
+  } = event;
 
-    if ([401, 403].includes(status)) destroySession();
-    else if (status > 299) window.alert(message);
+  if ([401, 403].includes(status)) destroySession();
+  else if (status > 299) {
+    event.preventDefault();
+
+    window.alert(message);
   }
-);
+});
 
 render(
   <Router>

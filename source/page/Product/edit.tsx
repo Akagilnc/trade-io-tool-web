@@ -133,7 +133,12 @@ export default class ProductEdit extends React.PureComponent<{
   renderImageField = (key: keyof typeof ProductField, props?: any) => (
     <Form.Group as={Col} controlId={key}>
       <Form.Label>{ProductField[key]}</Form.Label>
-      <FileInput accept="image/*" name={key} value={this.state.data[key]} />
+      <FileInput
+        accept="image/*"
+        name={key}
+        value={this.state.data[key]}
+        {...props}
+      />
     </Form.Group>
   );
 

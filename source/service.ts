@@ -1,56 +1,41 @@
+import { HTTPClient } from 'koajax';
 import memoize from 'lodash.memoize';
 
-export async function request(
-  path: string,
-  method?: string,
-  body?: FormData,
-  headers?: any,
-  options?: RequestInit
-) {
-  if (localStorage.token)
-    headers = { Authorization: `token ${localStorage.token}`, ...headers };
+export const client = new HTTPClient({
+  baseURI: 'http://47.108.141.18:8000',
+  responseType: 'json'
+});
 
-  const response = await fetch(
-    new URL(path, 'http://47.108.141.18:8000') + '',
-    {
-      method,
-      body,
-      headers,
-      ...options
-    }
-  );
+let token = localStorage.token;
 
-  if (response.status > 299) {
-    let error = await response.json();
+client.use(async ({ request: { method, path, headers }, response }, next) => {
+  if (token) headers!.Authorization = 'token ' + token;
 
+  try {
+    await next();
+  } catch ({ body: error, statusText, ...rest }) {
     if (!error.detail)
       error = Object.entries(error)
         .map(([key, value]) => `${key}: ${value}`)
         .join('\n');
 
-    throw Object.assign(
-      new URIError(error.detail || error || response.statusText),
-      {
-        response
-      }
-    );
+    throw Object.assign(new URIError(error.detail || error || statusText), {
+      statusText,
+      ...rest,
+      error
+    });
   }
 
-  switch ((response.headers.get('Content-Type') || '').split(';')[0]) {
-    case 'application/json':
-      return response.json();
-    default:
-      return response.blob();
-  }
-}
+  if (method === 'POST' && path.startsWith('/rest-auth/login/'))
+    localStorage.token = token = response.body.key;
+});
 
 export async function createSession(account: FormData) {
-  const { key } = await request('/rest-auth/login/', 'POST', account);
+  await client.post('/rest-auth/login/', account);
 
-  localStorage.token = key;
-  localStorage.account = JSON.stringify(
-    await request('/io_tool/get-current-user/')
-  );
+  const { body } = await client.get('/io_tool/get-current-user/');
+
+  localStorage.account = JSON.stringify(body);
 }
 
 export enum UserRole {
@@ -90,8 +75,10 @@ export interface Catalog {
   url?: string;
 }
 
-export function getCatalogs(): Promise<Catalog[]> {
-  return request('/io_tool/catalogs/');
+export async function getCatalogs() {
+  const { body } = await client.get<Catalog[]>('/io_tool/catalogs/');
+
+  return body!;
 }
 
 export interface ProductFilter {
@@ -122,15 +109,15 @@ export interface Product {
   [key: string]: any;
 }
 
-export function getProducts({
+export async function getProducts({
   page = 1,
   catalog = '',
   status = '',
   price_min = '',
   price_max = '',
   keyword = ''
-}: ProductFilter): Promise<{ count: number; results: Product[] }> {
-  return request(
+}: ProductFilter) {
+  const { body } = await client.get<{ count: number; results: Product[] }>(
     '/io_tool/products/?' +
       new URLSearchParams({
         page: page + '',
@@ -141,13 +128,17 @@ export function getProducts({
         search: keyword
       })
   );
+
+  return body!;
 }
 
-export function getProduct(id: string): Promise<Product> {
-  return request(`/io_tool/products/${id}/`);
+export async function getProduct(id: string) {
+  const { body } = await client.get<Product>(`/io_tool/products/${id}/`);
+
+  return body!;
 }
 
-export function updateProduct(data: FormData) {
+export async function updateProduct(data: FormData) {
   const id = Number(data.get('id')),
     SKU = data.get('SKU');
 
@@ -158,11 +149,13 @@ export function updateProduct(data: FormData) {
       else data.set(key, new File([value], `${SKU}-${value.name}`));
     } else if (key.startsWith('pic_')) data.delete(key);
 
-  if (id > 0) return request(`/io_tool/products/${id}/`, 'PATCH', data);
+  if (id > 0)
+    return (await client.patch<Product>(`/io_tool/products/${id}/`, data))
+      .body!;
 
   data.delete('id');
 
-  return request(`/io_tool/products/`, 'POST', data);
+  return (await client.post<Product>(`/io_tool/products/`, data)).body!;
 }
 
 export enum ProductStatus {
@@ -172,9 +165,9 @@ export enum ProductStatus {
 }
 
 export function changeProductStatus(id: string, value: ProductStatus) {
-  return request(`/io_tool/products/${id}/${value}/`, 'POST');
+  return client.post(`/io_tool/products/${id}/${value}/`);
 }
 
 export function deleteProduct(id: string) {
-  return request(`/io_tool/products/${id}/`, 'DELETE');
+  return client.delete(`/io_tool/products/${id}/`);
 }

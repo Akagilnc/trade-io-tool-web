@@ -61,14 +61,17 @@ export default class ProductDetail extends React.PureComponent<
             <Card.Title title={state.title_en}>{state.title_cn}</Card.Title>
 
             <Carousel className={style.slides}>
-              {images.map(([name, label]: string[]) => (
-                <Carousel.Item key={name}>
-                  <img src={state[name]} />
-                  <Carousel.Caption>
-                    <h3>{label}</h3>
-                  </Carousel.Caption>
-                </Carousel.Item>
-              ))}
+              {images.map(
+                ([name, label]: string[]) =>
+                  state[name] && (
+                    <Carousel.Item key={name}>
+                      <img src={state[name]} />
+                      <Carousel.Caption>
+                        <h3>{label}</h3>
+                      </Carousel.Caption>
+                    </Carousel.Item>
+                  )
+              )}
             </Carousel>
 
             <Table responsive striped bordered hover className="mt-3">

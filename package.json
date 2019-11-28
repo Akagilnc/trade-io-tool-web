@@ -9,6 +9,7 @@
     "file-saver": "^2.0.2",
     "history": "^4.10.1",
     "json2csv": "^4.5.4",
+    "koajax": "^0.3.2",
     "lodash.memoize": "^4.1.2",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.16",
@@ -23,7 +24,10 @@
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
     "@types/react-router-dom": "^4.3.5",
+    "@typescript-eslint/eslint-plugin": "^2.9.0",
+    "@typescript-eslint/parser": "^2.9.0",
     "autoprefixer": "^9.7.2",
+    "eslint": "^6.7.1",
     "husky": "^3.1.0",
     "less": "^3.10.3",
     "lint-staged": "^9.5.0",
@@ -47,8 +51,13 @@
     "singleQuote": true
   },
   "lint-staged": {
-    "*.{html,md,less,json,yml,ts,tsx}": [
+    "*.{html,md,less,json,yml}": [
       "prettier --write",
+      "git add"
+    ],
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix",
       "git add"
     ]
   },
