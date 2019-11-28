@@ -11,7 +11,7 @@ export async function request(
     headers = { Authorization: `token ${localStorage.token}`, ...headers };
 
   const response = await fetch(
-    new URL(path, 'http://47.108.88.218:8000') + '',
+    new URL(path, 'http://47.108.141.18:8000') + '',
     {
       method,
       body,
